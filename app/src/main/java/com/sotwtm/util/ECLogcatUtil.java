@@ -11,16 +11,19 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
 /**
- * A class to run log cat so record current app's log
- * @author John
+ * A class to run logcat to record app's log.
+ * The logcat process will be running still until the app is force stopped or device restarted.
+ *
+ * @author sheungon
  */
-public class LogcatUtil {
+public class ECLogcatUtil {
 
     private static final String SHARED_PREF_FILE_KEY = "LogcatPref";
 
@@ -28,12 +31,15 @@ public class LogcatUtil {
     public static final LogFormat DEFAULT_LOGCAT_FORMAT = LogFormat.Time;
     public static final int DEFAULT_LOGCAT_MAX_NO_OF_LOG_FILES = 1;
 
-    private static final String LOG_TAG = "LogcatUtil";
+    private static final String LOG_TAG = "ECLogcatUtil";
 
     private static final String PREF_KEY_APP_LINUX_USER_NAME = "AppLinuxUserName";
     private static final String PREF_KEY_LOGCAT_SINCE = "LogcatSince";
-
-    private static final String LOGCAT_BEGIN_OF_TIME = "01-01 00:00:00.000";
+    private static final String PREF_KEY_LOGCAT_FILE_MAX_SIZE = "LogcatFileMaxSize";
+    private static final String PREF_KEY_LOGCAT_FORMAT = "LogcatFormat";
+    private static final String PREF_KEY_LOGCAT_MAX_LOG_FILE = "LogcatMaxLogFile";
+    private static final String PREF_KEY_LOGCAT_FILTER_LOG_TAG = "LogcatFilterLogTag";
+    private static final String PREF_KEY_LOGCAT_PATH = "LogcatPath";
 
     private static final SimpleDateFormat LOGCAT_SINCE_FORMAT = new SimpleDateFormat("MM-dd HH:mm:ss.SSS", Locale.US);
 
@@ -43,21 +49,39 @@ public class LogcatUtil {
     private static final String PS_COL_PID = "PID";
     private static final String PS_COL_NAME = "NAME";
 
-    private static int _logcatFileMaxSize = DEFAULT_LOGCAT_FILE_SIZE;
+    private static volatile ECLogcatUtil _instance;
+
+    private final WeakReference<Context> mContextRef;
+
     @NonNull
-    private static LogFormat _logFormat = DEFAULT_LOGCAT_FORMAT;
-    private static int _maxLogFile = DEFAULT_LOGCAT_MAX_NO_OF_LOG_FILES;
-    @Nullable
-    private static String _filterLogTag = null;
+    public static synchronized ECLogcatUtil getInstance(@NonNull Context context) {
+
+        if (_instance == null ||
+                _instance.mContextRef.get() == null) {
+            _instance = new ECLogcatUtil(context);
+        }
+
+        return _instance;
+    }
+
+    private ECLogcatUtil(@NonNull Context context) {
+        mContextRef = new WeakReference<>(context.getApplicationContext());
+    }
 
     /**
      * Start a logcat process and log the log to {@code logFile}.
      * Only one concurrent logcat process will be created even call this method multiple times.
-     * @param logFile The designation of the log file.
      *
      * @return {@code true} if a logcat process created successfully or a logcat process already running before.
+     * @throws NullPointerException if the logcat path is not set by {@link #setLogcatDest(File)} yet.
      * */
-    public static synchronized boolean startLogcatAt(@NonNull Context context, @NonNull File logFile) {
+    public synchronized boolean startLogcat() {
+
+        Context context = mContextRef.get();
+        if (context == null) {
+            Log.e("No Context!!!");
+            return false;
+        }
 
         String username = getAppRunByUser(context);
         if (username == null) {
@@ -74,19 +98,26 @@ public class LogcatUtil {
 
         SharedPreferences sharedPreferences = getSharedPreferences(context);
 
+        String logcatPath = sharedPreferences.getString(PREF_KEY_LOGCAT_PATH, null);
+        if (TextUtils.isEmpty(logcatPath)) {
+            throw new NullPointerException("Logcat path is not set yet!!!");
+        }
+
         StringBuilder commandBuilder = new StringBuilder("logcat");
-        commandBuilder.append(" -f ").append(logFile.getAbsolutePath())
-                .append(" -r ").append(_logcatFileMaxSize)
-                .append(" -n ").append(_maxLogFile)
-                .append(" -v ").append(_logFormat.toString());
+        commandBuilder.append(" -f ").append(logcatPath)
+                .append(" -r ").append(sharedPreferences.getInt(PREF_KEY_LOGCAT_FILE_MAX_SIZE, DEFAULT_LOGCAT_FILE_SIZE))
+                .append(" -n ").append(sharedPreferences.getInt(PREF_KEY_LOGCAT_MAX_LOG_FILE, DEFAULT_LOGCAT_MAX_NO_OF_LOG_FILES))
+                .append(" -v ").append(sharedPreferences.getString(PREF_KEY_LOGCAT_FORMAT, DEFAULT_LOGCAT_FORMAT.toString()));
 
         String logcatSince = sharedPreferences.getString(PREF_KEY_LOGCAT_SINCE, null);
         if (logcatSince != null) {
             commandBuilder.append(" -T ").append(logcatSince);
         }
 
-        if (_filterLogTag != null) {
-            commandBuilder.append("*:S").append(_filterLogTag);
+        String filterTag = sharedPreferences.getString(PREF_KEY_LOGCAT_FILTER_LOG_TAG, null);
+        if (filterTag != null) {
+            // Filter all logs by the log tag
+            commandBuilder.append("*:S").append(filterTag);
         }
 
         String[] processParams = commandBuilder.toString().split(" ");
@@ -109,10 +140,17 @@ public class LogcatUtil {
      * Stop any running logcat instance
      * @return {@code true} if a logcat can be stopped by this. Or no logcat process was running.
      * */
-    public static boolean stopLogcat(@NonNull Context context) {
+    public boolean stopLogcat() {
+
+        Context context = mContextRef.get();
+        if (context == null) {
+            Log.e("No Context!!!");
+            return false;
+        }
 
         String username = getAppRunByUser(context);
         if (username == null) {
+            Log.e(LOG_TAG, "Cannot get ps user!!!");
             return false;
         }
 
@@ -137,40 +175,114 @@ public class LogcatUtil {
     }
 
     /**
+     * Reset logcat to log down all logs again.
+     *
+     * @return {@code true} if a logcat process has been recreated.
+     * @see #clearLogcat()
+     * */
+    public boolean resetLogcat() {
+
+        Context context = mContextRef.get();
+        if (context == null) {
+            Log.e("No Context!!!");
+            return false;
+        }
+
+
+        boolean logcatStopped = stopLogcat();
+        Log.d("Logcat stopped : " + logcatStopped);
+
+        getEditor(context).remove(PREF_KEY_LOGCAT_SINCE).apply();
+        Log.d("Reset logcat");
+
+        return startLogcat();
+    }
+
+    /**
      * Reset and start to print log since now only
      *
-     * @param logFile The designation of the log file.
-     *
-     * @return {@code true} if a logcat process created successfully or a logcat process already running before.
+     * @return {@code true} if a logcat process has been recreated.
+     * @see #resetLogcat()
      * */
-    public static boolean resetLogcat(@NonNull Context context,
-                                      @NonNull File logFile) {
+    public boolean clearLogcat() {
+
+        Context context = mContextRef.get();
+        if (context == null) {
+            Log.e("No Context!!!");
+            return false;
+        }
 
         String logcatSince = LOGCAT_SINCE_FORMAT.format(new Date());
 
-        boolean logcatStopped = stopLogcat(context);
+        boolean logcatStopped = stopLogcat();
         Log.d("Logcat stopped : " + logcatStopped);
 
         getEditor(context).putString(PREF_KEY_LOGCAT_SINCE, logcatSince).apply();
-        Log.d("Reset logcat since : " + logcatSince);
+        Log.d("Clear logcat since : " + logcatSince);
 
-        return startLogcatAt(context, logFile);
+        return startLogcat();
     }
 
-    public static void setLogcatFileMaxSize(int logcatFileMaxSize) {
-        _logcatFileMaxSize = logcatFileMaxSize;
+    /**
+     * Set the maximum size of each logcat file.
+     * @param logcatFileMaxSize Size in KB
+     * @see #setMaxLogFile(int)
+     * */
+    public void setLogcatFileMaxSize(int logcatFileMaxSize) {
+        Context context = mContextRef.get();
+        if (context == null) {
+            return;
+        }
+        getEditor(context).putInt(PREF_KEY_LOGCAT_FILE_MAX_SIZE, logcatFileMaxSize).apply();
     }
 
-    public static void setLogFormat(@NonNull LogFormat logFormat) {
-        _logFormat = logFormat;
+    /**
+     * Set the format of logcat.
+     * @param logFormat Possible values are {@link LogFormat}
+     * */
+    public void setLogcatFormat(@NonNull LogFormat logFormat) {
+        Context context = mContextRef.get();
+        if (context == null) {
+            return;
+        }
+        getEditor(context).putString(PREF_KEY_LOGCAT_FORMAT, logFormat.toString()).apply();
     }
 
-    public static void setMaxLogFile(int maxLogFile) {
-        _maxLogFile = maxLogFile;
+    /**
+     * Set the num of log file will be created if a log file excesses the max size
+     * @param maxLogFile The maximum number of log file will be created before overwriting the first log file.
+     * @see #setLogcatFileMaxSize(int)
+     * */
+    public void setMaxLogFile(int maxLogFile) {
+        Context context = mContextRef.get();
+        if (context == null) {
+            return;
+        }
+        getEditor(context).putInt(PREF_KEY_LOGCAT_MAX_LOG_FILE, maxLogFile).apply();
     }
 
-    public static void setFilterLogTag(@Nullable String filterLogTag) {
-        _filterLogTag = filterLogTag;
+    /**
+     * Set logcat should be filtered by the given log tag.
+     * @param filterLogTag The log tag. {@code null} means filtered by nothing.
+     * */
+    public void setFilterLogTag(@Nullable String filterLogTag) {
+        Context context = mContextRef.get();
+        if (context == null) {
+            return;
+        }
+        getEditor(context).putString(PREF_KEY_LOGCAT_FILTER_LOG_TAG, filterLogTag).apply();
+    }
+
+    /**
+     * Set the destination the logcat should save to.
+     * @param file The file indicate the path to save the logcat (e.g. /sdcard/log.txt)
+     * */
+    public void setLogcatDest(@NonNull File file) {
+        Context context = mContextRef.get();
+        if (context == null) {
+            return;
+        }
+        getEditor(context).putString(PREF_KEY_LOGCAT_PATH, file.getAbsolutePath()).apply();
     }
 
     /**
@@ -348,20 +460,17 @@ public class LogcatUtil {
     }
 
     private static boolean isLogcatRunningBy(@NonNull String user) {
-
         return getLogcatPIDRunningBy(user) != null;
     }
 
     @NonNull
     private static SharedPreferences.Editor getEditor(@NonNull Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences(SHARED_PREF_FILE_KEY, Context.MODE_PRIVATE);
-
         return sharedPref.edit();
     }
 
     @NonNull
     private static SharedPreferences getSharedPreferences(@NonNull Context context) {
-
         return context.getSharedPreferences(SHARED_PREF_FILE_KEY, Context.MODE_PRIVATE);
     }
 

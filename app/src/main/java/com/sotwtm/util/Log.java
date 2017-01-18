@@ -10,7 +10,7 @@ import java.lang.annotation.RetentionPolicy;
 
 /**
  * A logger that support enable/disable.
- * Created by johntsai on 14/7/15.
+ * It can be used for replacing the {@link android.util.Log} easily
  *
  * @author John
  */
