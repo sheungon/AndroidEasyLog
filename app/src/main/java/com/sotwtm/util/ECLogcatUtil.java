@@ -25,29 +25,30 @@ import java.util.Locale;
  */
 public class ECLogcatUtil {
 
-    private static final String SHARED_PREF_FILE_KEY = "LogcatPref";
+    private static final String COMMAND_SEPARATOR = "\n\r";
+    static final String SHARED_PREF_FILE_KEY = "LogcatPref";
 
     public static final int DEFAULT_LOGCAT_FILE_SIZE = 256; // KB
     public static final LogFormat DEFAULT_LOGCAT_FORMAT = LogFormat.Time;
     public static final int DEFAULT_LOGCAT_MAX_NO_OF_LOG_FILES = 1;
 
-    private static final String LOG_TAG = "ECLogcatUtil";
+    static final String LOG_TAG = "ECLogcatUtil";
 
-    private static final String PREF_KEY_APP_LINUX_USER_NAME = "AppLinuxUserName";
-    private static final String PREF_KEY_LOGCAT_SINCE = "LogcatSince";
-    private static final String PREF_KEY_LOGCAT_FILE_MAX_SIZE = "LogcatFileMaxSize";
-    private static final String PREF_KEY_LOGCAT_FORMAT = "LogcatFormat";
-    private static final String PREF_KEY_LOGCAT_MAX_LOG_FILE = "LogcatMaxLogFile";
-    private static final String PREF_KEY_LOGCAT_FILTER_LOG_TAG = "LogcatFilterLogTag";
-    private static final String PREF_KEY_LOGCAT_PATH = "LogcatPath";
+    static final String PREF_KEY_APP_LINUX_USER_NAME = "AppLinuxUserName";
+    static final String PREF_KEY_LOGCAT_SINCE = "LogcatSince";
+    static final String PREF_KEY_LOGCAT_FILE_MAX_SIZE = "LogcatFileMaxSize";
+    static final String PREF_KEY_LOGCAT_FORMAT = "LogcatFormat";
+    static final String PREF_KEY_LOGCAT_MAX_LOG_FILE = "LogcatMaxLogFile";
+    static final String PREF_KEY_LOGCAT_FILTER_LOG_TAG = "LogcatFilterLogTag";
+    static final String PREF_KEY_LOGCAT_PATH = "LogcatPath";
 
-    private static final SimpleDateFormat LOGCAT_SINCE_FORMAT = new SimpleDateFormat("MM-dd HH:mm:ss.SSS", Locale.US);
+    static final SimpleDateFormat LOGCAT_SINCE_FORMAT = new SimpleDateFormat("MM-dd HH:mm:ss.SSS", Locale.US);
 
-    private static final String REGEX_COLUMN_SEPARATOR = "(\\s+[A-Z]?\\s+|\\s+)";
+    static final String REGEX_COLUMN_SEPARATOR = "(\\s+[A-Z]?\\s+|\\s+)";
 
-    private static final String PS_COL_USER = "USER";
-    private static final String PS_COL_PID = "PID";
-    private static final String PS_COL_NAME = "NAME";
+    static final String PS_COL_USER = "USER";
+    static final String PS_COL_PID = "PID";
+    static final String PS_COL_NAME = "NAME";
 
     private static volatile ECLogcatUtil _instance;
 
@@ -104,23 +105,24 @@ public class ECLogcatUtil {
         }
 
         StringBuilder commandBuilder = new StringBuilder("logcat");
-        commandBuilder.append(" -f ").append(logcatPath)
-                .append(" -r ").append(sharedPreferences.getInt(PREF_KEY_LOGCAT_FILE_MAX_SIZE, DEFAULT_LOGCAT_FILE_SIZE))
-                .append(" -n ").append(sharedPreferences.getInt(PREF_KEY_LOGCAT_MAX_LOG_FILE, DEFAULT_LOGCAT_MAX_NO_OF_LOG_FILES))
-                .append(" -v ").append(sharedPreferences.getString(PREF_KEY_LOGCAT_FORMAT, DEFAULT_LOGCAT_FORMAT.toString()));
+        commandBuilder
+                .append(COMMAND_SEPARATOR).append("-f").append(COMMAND_SEPARATOR).append(logcatPath)
+                .append(COMMAND_SEPARATOR).append("-r").append(COMMAND_SEPARATOR).append(sharedPreferences.getInt(PREF_KEY_LOGCAT_FILE_MAX_SIZE, DEFAULT_LOGCAT_FILE_SIZE))
+                .append(COMMAND_SEPARATOR).append("-n").append(COMMAND_SEPARATOR).append(sharedPreferences.getInt(PREF_KEY_LOGCAT_MAX_LOG_FILE, DEFAULT_LOGCAT_MAX_NO_OF_LOG_FILES))
+                .append(COMMAND_SEPARATOR).append("-v").append(COMMAND_SEPARATOR).append(sharedPreferences.getString(PREF_KEY_LOGCAT_FORMAT, DEFAULT_LOGCAT_FORMAT.toString()));
 
         String logcatSince = sharedPreferences.getString(PREF_KEY_LOGCAT_SINCE, null);
         if (logcatSince != null) {
-            commandBuilder.append(" -T ").append(logcatSince);
+            commandBuilder.append(COMMAND_SEPARATOR).append("-T").append(COMMAND_SEPARATOR).append(logcatSince);
         }
 
         String filterTag = sharedPreferences.getString(PREF_KEY_LOGCAT_FILTER_LOG_TAG, null);
         if (filterTag != null) {
             // Filter all logs by the log tag
-            commandBuilder.append("*:S").append(filterTag);
+            commandBuilder.append(COMMAND_SEPARATOR).append("*:S").append(COMMAND_SEPARATOR).append(filterTag);
         }
 
-        String[] processParams = commandBuilder.toString().split(" ");
+        String[] processParams = commandBuilder.toString().split(COMMAND_SEPARATOR);
 
         // Run logcat here
         ProcessBuilder processBuilder = new ProcessBuilder(processParams);
@@ -128,7 +130,7 @@ public class ECLogcatUtil {
         try {
             processBuilder.start();
             Log.v(LOG_TAG, "Started logcat");
-            return true;
+            return isLogcatRunningBy(username);
         } catch (Exception e) {
             Log.e(LOG_TAG, "Error on starting logcat", e);
         }
@@ -289,7 +291,7 @@ public class ECLogcatUtil {
      * @return The app executed by which Linux user.
      * */
     @Nullable
-    private static String getAppRunByUser(@NonNull Context context) {
+    static String getAppRunByUser(@NonNull Context context) {
 
         SharedPreferences sharedPreferences = getSharedPreferences(context);
         String myUserName = sharedPreferences.getString(PREF_KEY_APP_LINUX_USER_NAME, null);
@@ -381,7 +383,7 @@ public class ECLogcatUtil {
     }
 
     @Nullable
-    private static String getLogcatPIDRunningBy(@NonNull String user) {
+    static String getLogcatPIDRunningBy(@NonNull String user) {
 
         String pid = null;
 
@@ -459,7 +461,7 @@ public class ECLogcatUtil {
         return pid;
     }
 
-    private static boolean isLogcatRunningBy(@NonNull String user) {
+    static boolean isLogcatRunningBy(@NonNull String user) {
         return getLogcatPIDRunningBy(user) != null;
     }
 
