@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">EC Log Sample</string>
+    <string name="filter">filter</string>
+    <string name="clear">Clear</string>
+    <string name="reset">Reset</string>
+    <string name="stop">Stop</string>
+    <string name="start">Start</string>
+    <string name="log_path">Log path:</string>
+    <string name="error_read_log">!!!ERROR ON READ LOG!!!</string>
+    <string name="log">Log</string>
+</resources>

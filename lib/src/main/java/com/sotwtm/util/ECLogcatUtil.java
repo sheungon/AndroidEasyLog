@@ -75,8 +75,21 @@ public class ECLogcatUtil {
      *
      * @return {@code true} if a logcat process created successfully or a logcat process already running before.
      * @throws NullPointerException if the logcat path is not set by {@link #setLogcatDest(File)} yet.
+     * @see #startLogcat(boolean)
      * */
     public synchronized boolean startLogcat() {
+        return startLogcat(true);
+    }
+
+    /**
+     * Start a logcat process and log the log to {@code logFile}.
+     * Only one concurrent logcat process will be created even call this method multiple times.
+     *
+     * @param clearPreviousLog {@code true} to clear the destination log file. Otherwise, new log is appended to the end of the file.
+     * @return {@code true} if a logcat process created successfully or a logcat process already running before.
+     * @throws NullPointerException if the logcat path is not set by {@link #setLogcatDest(File)} yet.
+     * */
+    public synchronized boolean startLogcat(boolean clearPreviousLog) {
 
         Context context = mContextRef.get();
         if (context == null) {
@@ -102,6 +115,15 @@ public class ECLogcatUtil {
         String logcatPath = sharedPreferences.getString(PREF_KEY_LOGCAT_PATH, null);
         if (TextUtils.isEmpty(logcatPath)) {
             throw new NullPointerException("Logcat path is not set yet!!!");
+        }
+
+        if (clearPreviousLog) {
+            boolean deletedOldLog = new File(logcatPath).delete();
+            if (deletedOldLog) {
+                Log.d(LOG_TAG, "Deleted old log.");
+            } else {
+                Log.e(LOG_TAG, "Error on delete old log.");
+            }
         }
 
         StringBuilder commandBuilder = new StringBuilder("logcat");
@@ -272,7 +294,13 @@ public class ECLogcatUtil {
         if (context == null) {
             return;
         }
-        getEditor(context).putString(PREF_KEY_LOGCAT_FILTER_LOG_TAG, filterLogTag).apply();
+        SharedPreferences.Editor editor = getEditor(context);
+        if (TextUtils.isEmpty(filterLogTag)) {
+            editor.remove(PREF_KEY_LOGCAT_FILTER_LOG_TAG);
+        } else {
+            editor.putString(PREF_KEY_LOGCAT_FILTER_LOG_TAG, filterLogTag);
+        }
+        editor.apply();
     }
 
     /**
