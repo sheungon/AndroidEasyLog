@@ -135,7 +135,7 @@ public class ECLogcatUtil {
 
         String logcatSince = sharedPreferences.getString(PREF_KEY_LOGCAT_SINCE, null);
         if (logcatSince != null) {
-            commandBuilder.append(COMMAND_SEPARATOR).append("-T").append(COMMAND_SEPARATOR).append(logcatSince);
+            commandBuilder.append(COMMAND_SEPARATOR).append("-T").append(COMMAND_SEPARATOR).append("0");
         }
 
         String filterTag = sharedPreferences.getString(PREF_KEY_LOGCAT_FILTER_LOG_TAG, null);
