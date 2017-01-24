@@ -12,6 +12,19 @@ buildscript {
     }
 }
 
+plugins {
+    /*
+     * Gradle Bintray Plugin
+     * https://github.com/bintray/gradle-bintray-plugin
+     * */
+    id "com.jfrog.bintray" version "1.7.3"
+    /*
+     * Gradle Android Maven plugin
+     * https://github.com/dcendents/android-maven-gradle-plugin
+     * */
+    id "com.github.dcendents.android-maven" version "1.5"
+}
+
 allprojects {
     repositories {
         jcenter()

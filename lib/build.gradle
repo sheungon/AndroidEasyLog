@@ -3,6 +3,30 @@ apply plugin: 'com.android.library'
 // For Code coverage
 apply plugin: 'jacoco'
 
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'android-ec-log'
+
+    publishedGroupId = 'com.sotwtm.util'
+    libraryName = 'AndroidEasyLog'
+    artifact = 'log'
+
+    libraryDescription = 'Easily enable/disable logs in your app without changing much in your current codes.'
+
+    siteUrl = 'https://github.com/sheungon/AndroidEasyLog'
+    gitUrl = 'https://github.com/sheungon/AndroidEasyLog.git'
+
+    libraryVersion = '0.1.0'
+
+    developerId = 'sheungon'
+    developerName = 'Tsai Sheung On'
+    developerEmail = 'sotwtm@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
@@ -10,8 +34,8 @@ android {
     defaultConfig {
         minSdkVersion 10
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode 10
+        versionName libraryVersion
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -32,3 +56,7 @@ dependencies {
     })
     testCompile 'junit:junit:4.12'
 }
+
+// Place it at the end of the file
+apply from: '../install.gradle'
+apply from: '../bintray.gradle'
