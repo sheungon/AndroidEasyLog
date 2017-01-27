@@ -1,4 +1,7 @@
-apply plugin: 'com.jfrog.bintray'
+/*
+ * Gradle Bintray Plugin
+ * https://github.com/bintray/gradle-bintray-plugin
+ * */
 version = libraryVersion
 
 if (project.hasProperty("android")) { // Android libraries
@@ -17,10 +20,9 @@ if (project.hasProperty("android")) { // Android libraries
         from sourceSets.main.allSource
     }
 }
-
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
-    from javadoc.destinationDir
+    from javadoc.getDestinationDir()
 }
 
 artifacts {

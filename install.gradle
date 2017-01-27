@@ -1,3 +1,7 @@
+/*
+ * Gradle Android Maven plugin
+ * https://github.com/dcendents/android-maven-gradle-plugin
+ * */
 apply plugin: 'com.github.dcendents.android-maven'
 // Maven Group ID for the artifact
 group = publishedGroupId
