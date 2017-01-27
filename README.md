@@ -1,7 +1,10 @@
 ## AndroidEasyLog
 
-Easily enable/disable logs in your app without changing much in your current codes.
-
+Easily enable/disable logs in your app without changing much in your current codes.<br />
+It also shows code line number in the log.<br />
+```
+01-27 12:18:35.086 15686-15686/com.sotwtm.log.sample D/Log: <15686>[(MainActivity.java:96)#onClickLog] Clicked at : Fri Jan 27 12:18:35 GMT+08:00 2017
+```
 
 ## Usage
 ### Enable/Disable Log
