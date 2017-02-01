@@ -162,6 +162,7 @@ public class ECLogcatUtil {
 
     /**
      * Stop any running logcat instance
+     *
      * @return {@code true} if a logcat can be stopped by this. Or no logcat process was running.
      * */
     public boolean stopLogcat() {
@@ -249,6 +250,7 @@ public class ECLogcatUtil {
 
     /**
      * Set the maximum size of each logcat file.
+     *
      * @param logcatFileMaxSize Size in KB
      * @see #setMaxLogFile(int)
      * */
@@ -262,6 +264,7 @@ public class ECLogcatUtil {
 
     /**
      * Set the format of logcat.
+     *
      * @param logFormat Possible values are {@link LogFormat}
      * */
     public void setLogcatFormat(@NonNull LogFormat logFormat) {
@@ -274,6 +277,7 @@ public class ECLogcatUtil {
 
     /**
      * Set the num of log file will be created if a log file excesses the max size
+     *
      * @param maxLogFile The maximum number of log file will be created before overwriting the first log file.
      * @see #setLogcatFileMaxSize(int)
      * */
@@ -287,6 +291,7 @@ public class ECLogcatUtil {
 
     /**
      * Set logcat should be filtered by the given log tag.
+     *
      * @param filterLogTag The log tag. {@code null} means filtered by nothing.
      * */
     public void setFilterLogTag(@Nullable String filterLogTag) {
@@ -305,6 +310,7 @@ public class ECLogcatUtil {
 
     /**
      * Set the destination the logcat should save to.
+     *
      * @param file The file indicate the path to save the logcat (e.g. /sdcard/log.txt)
      * */
     public void setLogcatDest(@NonNull File file) {
@@ -508,6 +514,9 @@ public class ECLogcatUtil {
     ////////////////////////////////
     // Class
     ////////////////////////////////
+    /**
+     * The log format for command {@code logcat}
+     * */
     public enum LogFormat {
         Brief,
         Process,

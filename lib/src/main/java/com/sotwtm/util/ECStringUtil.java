@@ -215,8 +215,8 @@ public class ECStringUtil {
      * of the specified length. The method uses the Random class that is
      * built-in to Java which is suitable for low to medium grade security uses.
      * This means that the output is only pseudo random, i.e., each number is
-     * mathematically generated so is not truly random.<p>
-     * <p/>
+     * mathematically generated so is not truly random.
+     * <p>
      * The specified length must be at least one. If not, the method will return empty string.
      *
      * @param length the desired length of the random String to return.
@@ -231,8 +231,8 @@ public class ECStringUtil {
      * Returns a random String of the specified length. The method uses the Random class that is
      * built-in to Java which is suitable for low to medium grade security uses.
      * This means that the output is only pseudo random, i.e., each number is
-     * mathematically generated so is not truly random.<p>
-     * <p/>
+     * mathematically generated so is not truly random.
+     * <p>
      * The specified length must be at least one. If not, the method will return empty string.
      *
      * @param length      the desired length of the random String to return.

@@ -1,8 +1,6 @@
 package com.sotwtm.log.sample;
 
-import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.sotwtm.util.Log;
 
@@ -11,24 +9,18 @@ import java.io.File;
 import java.io.FileReader;
 
 /**
- * @author John
+ * Util for file operations.
+ * @author sheungon
  */
 public class FileUtil {
 
-    public static final String LOG_FILE_NAME = "sms_interceptor.txt";
-
-    @Nullable
-    public static File getLogFile() {
-
-        // external directory
-        File externalStorageDir = Environment.getExternalStorageDirectory();
-        if (externalStorageDir != null) {
-            return new File(externalStorageDir, LOG_FILE_NAME);
-        }
-
-        return null;
-    }
-
+    /**
+     * Read a text file as {@link String}
+     * @param file To be read.
+     * @param stringBuilder A builder to storage the file content. All content will be append to
+     *                      the end of this {@link StringBuilder}
+     * @return {@code true} if the operation was successfully executed.
+     * */
     public static boolean readTextFile(@NonNull File file,
                                        @NonNull StringBuilder stringBuilder) {
 

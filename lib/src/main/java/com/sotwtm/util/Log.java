@@ -12,7 +12,7 @@ import java.lang.annotation.RetentionPolicy;
  * A logger that support enable/disable.
  * It can be used for replacing the {@link android.util.Log} easily
  *
- * @author John
+ * @author sheungon
  */
 @SuppressWarnings("unused")
 public final class Log {
@@ -128,6 +128,11 @@ public final class Log {
     static OnWtfListener _ActionOnWtfDebug = null;
 
 
+    /**
+     * The default log tag for {@link #v(String)}, {@link #d(String)}, {@link #i(String)},
+     * {@link #w(String)}, {@link #e(String)}, {@link #wtf(String)}
+     * @param logTag The log tag
+     * */
     public static void setDefaultLogTag(@NonNull String logTag) {
         _DefaultTag = logTag;
     }
@@ -135,6 +140,7 @@ public final class Log {
     /**
      * The extra action to do on method {@link #wtf(String)}* or overloading methods called.
      * This action will be taken when it is release build.
+     * @param action The action to be executed on {@link #wtf(String)} called.
      * @see #setActionOnWtfDebug(OnWtfListener)
      * */
     public static void setActionOnWtf(@Nullable OnWtfListener action) {
@@ -144,12 +150,18 @@ public final class Log {
     /**
      * The extra action to do on method {@link #wtf(String)}* or overloading methods called.
      * This action will be taken when it is Debug build.
+     * @param action The action to be executed on {@link #wtf(String)} called.
      * @see #setActionOnWtf(OnWtfListener)
      * */
     public static void setActionOnWtfDebug(@Nullable OnWtfListener action) {
         _ActionOnWtfDebug = action;
     }
 
+    /**
+     * Set loggable level.
+     * @param lLevel {@link #VERBOSE} to enable all logs. {@link #NONE} to disable all logs.
+     * @see LogLevel
+     * */
     public static void setLogLevel(@LogLevel int lLevel) {
         switch (lLevel) {
             case VERBOSE:
@@ -178,6 +190,10 @@ public final class Log {
     private Log() {
     }
 
+    /**
+     * @return The current log level
+     * @see LogLevel
+     * */
     public static int getLogLevel() {
         if (_logLevel == UNKNOWN) {
             return BuildConfig.DEBUG ? VERBOSE : NONE;
@@ -185,7 +201,12 @@ public final class Log {
         return _logLevel;
     }
 
-    public static boolean isLoggable(int level) {
+    /**
+     * @param level The log level going to check.
+     * @return {@code true} if the input level is loggable.
+     * @see LogLevel
+     * */
+    public static boolean isLoggable(@LogLevel int level) {
         return level != NONE
                 && android.util.Log.isLoggable(_DefaultTag, level);
     }
@@ -238,7 +259,7 @@ public final class Log {
     /**
      * Return string with ClassName.Method Line <tid>, and optionally tag
      *
-     * @param msg - A log message
+     * @param msg A log message
      * @return <tag>ClassName.Method Line <tid>
      */
     @NonNull
@@ -253,14 +274,18 @@ public final class Log {
         return sb.toString();
     }
 
-    public static String getStackTraceString(Throwable tr) {
+    /**
+     * @param tr The {@link Throwable} going to be converted
+     * @return The Stacktrace string for the input {@link Throwable}
+     * */
+    public static String getStackTraceString(@Nullable Throwable tr) {
         return android.util.Log.getStackTraceString(tr);
     }
 
     /**
      * Please put UI related log here.
      *
-     * @param msg - A log message
+     * @param msg A log message
      * @return no. of byte wrote to log
      */
     public static int v(@Nullable String msg) {
@@ -270,8 +295,8 @@ public final class Log {
     /**
      * Please put UI related log here.
      *
-     * @param tag - A log tag for this Log message.
-     * @param msg - A log message.
+     * @param tag A log tag for this Log message.
+     * @param msg A log message.
      * @return no. of byte wrote to log
      */
     public static int v(@Nullable String tag,
@@ -291,9 +316,9 @@ public final class Log {
      * Please put UI related log here. Providing either parameter msg or tr is
      * enough.
      *
-     * @param tag - A log tag for this Log message.
-     * @param msg - A log message.
-     * @param tr  - A {@link Throwable} of an error.
+     * @param tag A log tag for this Log message.
+     * @param msg A log message.
+     * @param tr  A {@link Throwable} of an error.
      * @return no. of byte wrote to log
      */
     public static int v(@Nullable String tag,
@@ -313,6 +338,7 @@ public final class Log {
     /**
      * Please do not put UI related log here.
      *
+     * @param msg A log message.
      * @return no. of byte wrote to log
      */
     public static int d(@Nullable String msg) {
@@ -322,6 +348,8 @@ public final class Log {
     /**
      * Please do not put UI related log here.
      *
+     * @param tag A log tag for this Log message.
+     * @param msg A log message.
      * @return no. of byte wrote to log
      */
     public static int d(@Nullable String tag,
@@ -339,9 +367,12 @@ public final class Log {
 
     /**
      * Please do not put UI related log here.
-     * <p/>
+     * <p>
      * Providing either parameter msg or tr is enough.
      *
+     * @param tag A log tag for this Log message.
+     * @param msg A log message.
+     * @param tr A {@link Throwable} related to this log.
      * @return no. of byte wrote to log
      */
     public static int d(@Nullable String tag,
@@ -361,6 +392,7 @@ public final class Log {
     /**
      * Please do not put UI related log here.
      *
+     * @param msg A log message.
      * @return no. of byte wrote to log
      */
     public static int i(@Nullable String msg) {
@@ -370,6 +402,8 @@ public final class Log {
     /**
      * Please do not put UI related log here.
      *
+     * @param tag A log tag for this Log message.
+     * @param msg A log message.
      * @return no. of byte wrote to log
      */
     public static int i(@Nullable String tag,
@@ -387,9 +421,12 @@ public final class Log {
 
     /**
      * Please do not put UI related log here.
-     * <p/>
+     * <p>
      * Providing either parameter msg or tr is enough.
      *
+     * @param tag A log tag for this Log message.
+     * @param msg A log message.
+     * @param tr A {@link Throwable} related to this log.
      * @return no. of byte wrote to log
      */
     public static int i(@Nullable String tag,
@@ -409,6 +446,7 @@ public final class Log {
     /**
      * Please do not put UI related log here.
      *
+     * @param msg A log message.
      * @return no. of byte wrote to log
      */
     public static int w(@Nullable String msg) {
@@ -418,6 +456,8 @@ public final class Log {
     /**
      * Please do not put UI related log here.
      *
+     * @param tag A log tag for this Log message.
+     * @param msg A log message.
      * @return no. of byte wrote to log
      */
     public static int w(@Nullable String tag,
@@ -435,9 +475,12 @@ public final class Log {
 
     /**
      * Please do not put UI related log here.
-     * <p/>
+     * <p>
      * Providing either parameter msg or tr is enough.
      *
+     * @param tag A log tag for this Log message.
+     * @param msg A log message.
+     * @param tr A {@link Throwable} related to this log.
      * @return no. of byte wrote to log
      */
     public static int w(@Nullable String tag,
@@ -457,6 +500,7 @@ public final class Log {
     /**
      * Please do not put UI related log here.
      *
+     * @param msg A log message.
      * @return no. of byte wrote to log
      */
     public static int e(@Nullable String msg) {
@@ -466,6 +510,8 @@ public final class Log {
     /**
      * Please do not put UI related log here.
      *
+     * @param tag A log tag for this Log message.
+     * @param msg A log message.
      * @return no. of byte wrote to log
      */
     public static int e(@Nullable String tag,
@@ -484,6 +530,8 @@ public final class Log {
     /**
      * Please do not put UI related log here.
      *
+     * @param msg A log message.
+     * @param tr A {@link Throwable} related to this log.
      * @return no. of byte wrote to log
      */
     public static int e(@Nullable String msg, @Nullable Throwable tr) {
@@ -492,9 +540,12 @@ public final class Log {
 
     /**
      * Please do not put UI related log here.
-     * <p/>
+     * <p>
      * Providing either parameter msg or tr is enough.
      *
+     * @param tag A log tag for this Log message.
+     * @param msg A log message.
+     * @param tr A {@link Throwable} related to this log.
      * @return no. of byte wrote to log
      */
     public static int e(@Nullable String tag,
@@ -514,6 +565,7 @@ public final class Log {
     /**
      * Please do not put UI related log here.
      *
+     * @param msg A log message.
      * @return no. of byte wrote to log
      */
     public static int wtf(@Nullable String msg) {
@@ -523,6 +575,8 @@ public final class Log {
     /**
      * Please do not put UI related log here.
      *
+     * @param tag A log tag for this Log message.
+     * @param msg A log message.
      * @return no. of byte wrote to log
      */
     public static int wtf(@Nullable String tag,
@@ -532,9 +586,11 @@ public final class Log {
 
     /**
      * Please do not put UI related log here.
-     * <p/>
+     * <p>
      * Providing either parameter msg or tr is enough.
      *
+     * @param msg A log message.
+     * @param tr A {@link Throwable} related to this log.
      * @return no. of byte wrote to log
      */
     public static int wtf(@Nullable String msg,
@@ -544,9 +600,12 @@ public final class Log {
 
     /**
      * Please do not put UI related log here.
-     * <p/>
+     * <p>
      * Providing either parameter msg or tr is enough.
      *
+     * @param tag A log tag for this Log message.
+     * @param msg A log message.
+     * @param tr A {@link Throwable} related to this log.
      * @return no. of byte wrote to log
      */
     public static int wtf(@Nullable String tag,
@@ -635,7 +694,14 @@ public final class Log {
     //////////////////////////////////////////
     // Class and interface
     //////////////////////////////////////////
+    /**
+     * Listener to capture {@link Log#wtf(String)} event and react to it
+     * */
     public interface OnWtfListener {
+        /**
+         * @param msg The message for the wtf event.
+         * @param tr The {@link Throwable} causing this wtf event.
+         * */
         void onWtf(@Nullable String msg, @Nullable Throwable tr);
     }
 
