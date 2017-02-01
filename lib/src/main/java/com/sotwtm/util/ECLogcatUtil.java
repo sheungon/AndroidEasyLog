@@ -118,7 +118,8 @@ public class ECLogcatUtil {
         }
 
         if (clearPreviousLog) {
-            boolean deletedOldLog = new File(logcatPath).delete();
+            File oldLog = new File(logcatPath);
+            boolean deletedOldLog = !oldLog.isFile() || oldLog.delete();
             if (deletedOldLog) {
                 Log.d(LOG_TAG, "Deleted old log.");
             } else {
