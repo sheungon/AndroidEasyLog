@@ -1,9 +1,15 @@
-## AndroidEasyLog
+# AndroidEasyLog [ ![Download](https://api.bintray.com/packages/sheungon/maven/android-ec-log/images/download.svg) ](https://bintray.com/sheungon/maven/android-ec-log/_latestVersion)  [![](https://raw.githubusercontent.com/novoda/novoda/master/assets/btn_apache_lisence.png)](LICENSE.txt)
 
 Easily enable/disable logs in your app without changing much in your current codes.<br />
 It also shows code line number in the log.<br />
 ```
 01-27 12:18:35.086 15686-15686/com.sotwtm.log.sample D/Log: <15686>[(MainActivity.java:96)#onClickLog] Clicked at : Fri Jan 27 12:18:35 GMT+08:00 2017
+```
+
+## Adding to project
+####Gradle
+``` gradle
+compile 'com.sotwtm.util:ec-log:0.1.0'
 ```
 
 ## Usage
