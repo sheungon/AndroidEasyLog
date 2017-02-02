@@ -28,7 +28,7 @@ android {
 
 dependencies {
 
-    compile project(':lib')
+    compile project(':ec-log')
 
     compile 'com.android.support:appcompat-v7:25.1.1'
 
