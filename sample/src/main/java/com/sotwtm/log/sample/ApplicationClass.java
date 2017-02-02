@@ -10,7 +10,7 @@ import com.sotwtm.util.Log;
 import java.io.File;
 
 /**
- * Created by John on 2017-01-20.
+ * Created by sheungon on 2017-01-20.
  */
 
 public class ApplicationClass extends Application {
