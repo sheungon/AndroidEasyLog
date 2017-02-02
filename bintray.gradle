@@ -2,7 +2,13 @@
  * Gradle Bintray Plugin
  * https://github.com/bintray/gradle-bintray-plugin
  * */
-version = libraryVersion
+apply plugin: 'com.jfrog.bintray'
+
+// Read setup
+Properties properties = new Properties()
+properties.load(project.rootProject.file('bintray.properties').newDataInputStream())
+
+version = properties.getProperty("lib.version")
 
 if (project.hasProperty("android")) { // Android libraries
     task sourcesJar(type: Jar) {
@@ -40,30 +46,38 @@ artifacts {
     archives sourcesJar
 }
 
-// Bintray
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 bintray {
     user = properties.getProperty("bintray.user")
     key = properties.getProperty("bintray.apikey")
 
     configurations = ['archives']
+    publish = true
+    // [Default: false] Whether to run this as dry-run, without deploying
+    dryRun = false
     pkg {
-        repo = bintrayRepo
-        name = bintrayName
-        desc = libraryDescription
-        websiteUrl = siteUrl
-        vcsUrl = gitUrl
-        licenses = allLicenses
-        publish = true
+        repo = properties.getProperty("bintray.repo")
+        name = properties.getProperty("bintray.name")
+        desc = properties.getProperty("lib.description")
+        websiteUrl = properties.getProperty("lib.siteUrl")
+        issueTrackerUrl = properties.getProperty("lib.issueTracker")
+        vcsUrl = properties.getProperty("lib.vcs")
+        licenses = properties.get("license.all")
         publicDownloadNumbers = true
+
+        // Optional Github repository
+        githubRepo = properties.getProperty("github.repo")
+
         version {
-            desc = libraryDescription
+            name = properties.getProperty("lib.version")
+            desc = properties.getProperty("lib.versionDescription")
+            released  = new Date()
+            vcsTag = properties.getProperty("lib.version")
             gpg {
-                sign = true //Determines whether to GPG sign the files. The default is false
+                // Determines whether to GPG sign the files. The default is false
+                sign = true
+                // The passphrase for GPG signing'
                 passphrase = properties.getProperty("bintray.gpg.password")
-                //Optional. The passphrase for GPG signing'
             }
         }
     }

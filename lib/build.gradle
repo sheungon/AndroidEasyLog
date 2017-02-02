@@ -3,29 +3,9 @@ apply plugin: 'com.android.library'
 // For Code coverage
 apply plugin: 'jacoco'
 
-ext {
-    bintrayRepo = 'maven'
-    bintrayName = 'android-ec-log'
-
-    publishedGroupId = 'com.sotwtm.util'
-    libraryName = 'AndroidEasyLog'
-    artifact = 'log'
-
-    libraryDescription = 'Easily enable/disable logs in your app without changing much in your current codes.'
-
-    siteUrl = 'https://github.com/sheungon/AndroidEasyLog'
-    gitUrl = 'https://github.com/sheungon/AndroidEasyLog.git'
-
-    libraryVersion = '0.1.0'
-
-    developerId = 'sheungon'
-    developerName = 'Tsai Sheung On'
-    developerEmail = 'sotwtm@gmail.com'
-
-    licenseName = 'The Apache Software License, Version 2.0'
-    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-    allLicenses = ["Apache-2.0"]
-}
+// Read setup
+Properties properties = new Properties()
+properties.load(project.rootProject.file('bintray.properties').newDataInputStream())
 
 android {
     compileSdkVersion 25
@@ -35,7 +15,7 @@ android {
         minSdkVersion 10
         targetSdkVersion 25
         versionCode 10
-        versionName libraryVersion
+        versionName properties.getProperty("lib.version")
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }

@@ -7,22 +7,21 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.3'
 
+        /*
+         * Gradle Bintray Plugin
+         * https://github.com/bintray/gradle-bintray-plugin
+         * */
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+        /*
+         * Gradle Android Maven plugin
+         * Use 1.4.1 for gradle version 2.14+
+         * https://github.com/dcendents/android-maven-gradle-plugin
+         * */
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
-}
-
-plugins {
-    /*
-     * Gradle Bintray Plugin
-     * https://github.com/bintray/gradle-bintray-plugin
-     * */
-    id "com.jfrog.bintray" version "1.7.3"
-    /*
-     * Gradle Android Maven plugin
-     * https://github.com/dcendents/android-maven-gradle-plugin
-     * */
-    id "com.github.dcendents.android-maven" version "1.5"
 }
 
 allprojects {
