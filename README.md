@@ -1,4 +1,4 @@
-# AndroidEasyLog [ ![Download](https://api.bintray.com/packages/sheungon/maven/android-ec-log/images/download.svg) ](https://bintray.com/sheungon/maven/android-ec-log/_latestVersion)  [![](https://raw.githubusercontent.com/novoda/novoda/master/assets/btn_apache_lisence.png)](LICENSE.txt)
+# AndroidEasyLog [ ![Download](https://api.bintray.com/packages/sheungon/maven/android-ec-log/images/download.svg) ](https://bintray.com/sheungon/maven/android-ec-log/_latestVersion)  [![](https://raw.githubusercontent.com/novoda/novoda/master/assets/btn_apache_lisence.png)](LICENSE)
 
 Easily enable/disable logs in your app without changing much in your current codes.<br />
 It also shows code line number in the log.<br />
