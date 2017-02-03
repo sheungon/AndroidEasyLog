@@ -75,7 +75,18 @@ if (Log.isDebuggable()) {
    // Do only if the app is debuggable (loggable)
 }
 ```
-
+OR by removing them by prograud
+```
+-assumenosideeffects class com.sotwtm.util.Log {
+    public static *** v(...);
+    public static *** d(...);
+    public static *** i(...);
+    public static *** w(...);
+    public static *** e(...);
+    public static *** wtf(...);
+}
+```
+Reference, [Stackoverflow - Android Remove All Logging Calls](http://stackoverflow.com/questions/2446248/remove-all-debug-logging-calls-before-publishing-are-there-tools-to-do-this)
 
 ## LICENSE
 [Apache License, version 2.0](LICENSE)
