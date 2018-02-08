@@ -3,6 +3,7 @@
  * https://github.com/bintray/gradle-bintray-plugin
  * */
 apply plugin: 'com.jfrog.bintray'
+apply plugin: 'org.jetbrains.dokka-android'
 
 // Read setup
 Properties properties = new Properties()
@@ -10,25 +11,11 @@ properties.load(project.rootProject.file('bintray.properties').newDataInputStrea
 
 version = properties.getProperty("lib.version")
 
+
 if (project.hasProperty("android")) { // Android libraries
     task sourcesJar(type: Jar) {
         classifier = 'sources'
         from android.sourceSets.main.java.srcDirs
-    }
-
-    task javadoc(type: Javadoc) {
-        source = android.sourceSets.main.java.srcDirs
-        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    }
-
-    /*
-    * Fix build error on generating Javadoc
-    * See, http://stackoverflow.com/questions/34571371/android-studio-javadoc-cannot-find-symbol
-    * */
-    afterEvaluate {
-        javadoc.classpath += files(android.libraryVariants.collect { variant ->
-            variant.javaCompile.classpath.files
-        })
     }
 } else { // Java libraries
     task sourcesJar(type: Jar, dependsOn: classes) {
@@ -36,9 +23,15 @@ if (project.hasProperty("android")) { // Android libraries
         from sourceSets.main.allSource
     }
 }
-task javadocJar(type: Jar, dependsOn: javadoc) {
+
+dokka {
+    outputFormat = 'javadoc'
+    outputDirectory = "$buildDir/javadoc"
+}
+
+task javadocJar(type: Jar, dependsOn: dokka) {
     classifier = 'javadoc'
-    from javadoc.getDestinationDir()
+    from "$buildDir/javadoc"
 }
 
 artifacts {
