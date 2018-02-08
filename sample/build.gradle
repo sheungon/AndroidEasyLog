@@ -1,13 +1,15 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion compile_sdk_version
+    buildToolsVersion build_tools_version
 
     defaultConfig {
         applicationId "com.sotwtm.log.sample"
-        minSdkVersion 10
-        targetSdkVersion 25
+        minSdkVersion 14
+        targetSdkVersion target_sdk_version
         versionCode 1
         versionName "1.0"
 
@@ -15,9 +17,24 @@ android {
 
     }
     buildTypes {
-        release {
+        debug {
+            debuggable true
+            jniDebuggable true
+            zipAlignEnabled false
             minifyEnabled false
+            useProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            testCoverageEnabled true
+        }
+        release {
+            debuggable false
+            jniDebuggable false
+            zipAlignEnabled true
+            minifyEnabled true
+            useProguard true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -28,12 +45,21 @@ android {
 
 dependencies {
 
-    compile project(':ec-log')
+    implementation project(':ec-log')
 
-    compile 'com.android.support:appcompat-v7:25.1.1'
+    /*
+     * Kotlin
+     * */
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$versions.kotlin_plugin"
+    kapt "com.android.databinding:compiler:$versions.android_plugin"
 
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation "com.android.support:appcompat-v7:$versions.support_lib"
+
+
+
+    androidTestImplementation("com.android.support.test.espresso:espresso-core:$versions.espresso", {
         exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
     })
-    testCompile 'junit:junit:4.12'
+    testImplementation deps.junit
 }

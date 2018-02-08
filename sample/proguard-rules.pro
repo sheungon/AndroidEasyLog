@@ -15,3 +15,10 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+##############################
+# Android Databinding
+# http://stackoverflow.com/questions/35472130/conflict-between-android-data-binding-and-guava-causes-proguard-error
+##############################
+-dontwarn android.databinding.**
+-keep class android.databinding.** { *; }

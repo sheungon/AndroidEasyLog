@@ -1,23 +1,51 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+    ext {
+        compile_sdk_version = 27
+        build_tools_version = '27.0.3'
+        target_sdk_version = 27
+
+        versions = [
+                'kotlin_plugin'      : '1.2.21',
+                'android_plugin'     : '3.0.1',
+
+                // Support library version
+                // https://developer.android.com/topic/libraries/support-library/revisions.html
+                'support_lib'        : '27.0.2',
+
+                /*
+                 * Gradle Android Maven plugin
+                 * Use 2.0 for gradle version 4.1+
+                 * https://github.com/dcendents/android-maven-gradle-plugin
+                 * */
+                'gradle_maven_plugin': '2.0',
+
+                /*
+                 * Gradle Bintray Plugin
+                 * https://github.com/bintray/gradle-bintray-plugin
+                 * */
+                'bintray_plugin'     : '1.8.0',
+
+                // https://developer.android.com/topic/libraries/testing-support-library/packages.html
+                'espresso'            : '3.0.1',
+        ]
+
+        deps = [
+                // http://junit.org/junit4/
+                'junit': 'junit:junit:4.12'
+        ]
+    }
     repositories {
+        google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin_plugin"
 
-        /*
-         * Gradle Bintray Plugin
-         * https://github.com/bintray/gradle-bintray-plugin
-         * */
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
-        /*
-         * Gradle Android Maven plugin
-         * Use 1.4.1 for gradle version 2.14+
-         * https://github.com/dcendents/android-maven-gradle-plugin
-         * */
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:$versions.bintray_plugin"
+        classpath "com.github.dcendents:android-maven-gradle-plugin:$versions.gradle_maven_plugin"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -26,7 +54,27 @@ buildscript {
 
 allprojects {
     repositories {
+        google()
         jcenter()
+    }
+}
+
+subprojects {
+    /*
+    * Fix dependency error
+    * https://github.com/JakeWharton/u2020/blob/9870fa4291f5c813ed929aec26c94bee2b92d2b7/build.gradle#L105-L113
+    * */
+    configurations.all {
+        resolutionStrategy {
+            eachDependency { details ->
+                // Force all of the primary support libraries to use the same version.
+                if (details.requested.group == 'com.android.support'
+                        && details.requested.name != 'multidex'
+                        && details.requested.name != 'multidex-instrumentation') {
+                    details.useVersion "$rootProject.ext.versions.support_lib"
+                }
+            }
+        }
     }
 }
 

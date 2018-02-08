@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
 // For Code coverage
 apply plugin: 'jacoco'
@@ -8,13 +9,13 @@ Properties properties = new Properties()
 properties.load(project.rootProject.file('bintray.properties').newDataInputStream())
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion compile_sdk_version
+    buildToolsVersion build_tools_version
 
     defaultConfig {
-        minSdkVersion 10
-        targetSdkVersion 25
-        versionCode 10
+        minSdkVersion 14
+        targetSdkVersion target_sdk_version
+        versionCode 11
         versionName properties.getProperty("lib.version")
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -28,13 +29,20 @@ android {
 }
 
 dependencies {
+    /*
+     * Kotlin
+     * */
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$versions.kotlin_plugin"
 
-    compile 'com.android.support:support-annotations:25.1.1'
+    implementation "com.android.support:support-annotations:$versions.support_lib"
 
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+
+
+    androidTestImplementation("com.android.support.test.espresso:espresso-core:$versions.espresso", {
         exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
     })
-    testCompile 'junit:junit:4.12'
+    testImplementation deps.junit
 }
 
 // Place it at the end of the file
