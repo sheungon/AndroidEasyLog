@@ -23,7 +23,7 @@ class ApplicationClass : Application() {
 
         super.onCreate()
 
-        Log.setLogLevel(Log.VERBOSE)
+        Log.logLevel = Log.VERBOSE
 
         // Initialize logcat export location
         logFile = File(Environment.getExternalStorageDirectory().path, "log.txt")

@@ -6,7 +6,7 @@
     <string name="stop">Stop</string>
     <string name="start">Start</string>
     <string name="log_path">Log path:</string>
-    <string name="error_read_log">!!!ERROR ON READ LOG!!!</string>
+    <string name="error_read_log">!ERROR ON READ LOG!</string>
     <string name="log">Log</string>
     <string name="msg_needed_external_access">External storage access is needed for this demo.</string>
 </resources>
