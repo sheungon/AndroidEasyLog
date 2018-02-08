@@ -25,6 +25,8 @@ import java.util.Locale;
  */
 public class ECLogcatUtil {
 
+    private static final String COMMAND_PS = "ps";
+    private static final String COMMAND_LOGCAT = "logcat";
     private static final String COMMAND_SEPARATOR = "\n\r";
     static final String SHARED_PREF_FILE_KEY = "LogcatPref";
 
@@ -127,7 +129,7 @@ public class ECLogcatUtil {
             }
         }
 
-        StringBuilder commandBuilder = new StringBuilder("logcat");
+        StringBuilder commandBuilder = new StringBuilder(COMMAND_LOGCAT);
         commandBuilder
                 .append(COMMAND_SEPARATOR).append("-f").append(COMMAND_SEPARATOR).append(logcatPath)
                 .append(COMMAND_SEPARATOR).append("-r").append(COMMAND_SEPARATOR).append(sharedPreferences.getInt(PREF_KEY_LOGCAT_FILE_MAX_SIZE, DEFAULT_LOGCAT_FILE_SIZE))
@@ -337,7 +339,7 @@ public class ECLogcatUtil {
 
             /*Don't user `grep` as it could be not available on some devices.*/
             // Execute `ps`
-            ProcessBuilder psBuilder = new ProcessBuilder("ps");
+            ProcessBuilder psBuilder = new ProcessBuilder(COMMAND_PS);
             Process ps;
             try {
                 ps = psBuilder.start();
@@ -424,7 +426,7 @@ public class ECLogcatUtil {
 
         /*Don't user `grep` as it could be not available on some devices.*/
         // Execute `ps logcat` to find all logcat process
-        ProcessBuilder processBuilder = new ProcessBuilder("ps", "logcat");
+        ProcessBuilder processBuilder = new ProcessBuilder(COMMAND_PS);
         Process ps;
         try {
             ps = processBuilder.start();
@@ -438,7 +440,7 @@ public class ECLogcatUtil {
         BufferedReader bf = new BufferedReader(new InputStreamReader(is));
         try {
 
-            Log.d(LOG_TAG, "======`ps logcat` output start======");
+            Log.d(LOG_TAG, "======`ps` look for logcat output start======");
 
             // Read the first line and find the target column
             String line = bf.readLine();
@@ -452,15 +454,19 @@ public class ECLogcatUtil {
             String[] columns = line.split(REGEX_COLUMN_SEPARATOR);
             int userColumn = -1;
             int pidColumn = -1;
+            int nameColumn = -1;
             for (int i = 0; i < columns.length; i++) {
                 if (PS_COL_USER.equalsIgnoreCase(columns[i])) {
                     userColumn = i;
                 } else if (PS_COL_PID.equalsIgnoreCase(columns[i])) {
                     pidColumn = i;
+                } else if (PS_COL_NAME.equalsIgnoreCase(columns[i])) {
+                    nameColumn = i;
                 }
             }
             if (userColumn == -1 ||
-                    pidColumn == -1) {
+                    pidColumn == -1 ||
+                    nameColumn == -1) {
                 Log.e(LOG_TAG, "Some column cannot be found from output.");
                 return null;
             }
@@ -470,13 +476,14 @@ public class ECLogcatUtil {
                 // Split by space
                 columns = line.split(REGEX_COLUMN_SEPARATOR);
 
-                if (user.equals(columns[userColumn])) {
+                if (columns[nameColumn].toLowerCase().contains(COMMAND_LOGCAT) &&
+                        user.equals(columns[userColumn])) {
                     // Found the current user's process
                     pid = columns[pidColumn];
-                    Log.v(LOG_TAG, "Logcat is already running by user [" + user + "] pid : " + pid);
+                    Log.v(LOG_TAG, "Logcat is running by user [" + user + "] pid : " + pid);
                 }
             }
-            Log.d(LOG_TAG, "======`ps logcat` output end======");
+            Log.d(LOG_TAG, "======`ps` look for logcat output end======");
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error on reading output from 'ps'", e);
         } finally {
