@@ -9,11 +9,11 @@ It also shows code line number in the log.<br />
 ## Adding to project
 ####Gradle
 ``` gradle
-compile 'com.sotwtm.util:ec-log:0.1.0'
+compile 'com.sotwtm.util:ec-log:0.1.1'
 ```
 
 ## Usage
-### Enable/Disable Log
+### Enable/Disable Log with log level
 ``` java
 // Show all logs
 Log.setLogLevel(Log.VERBOSE);
