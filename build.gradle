@@ -7,12 +7,12 @@ buildscript {
         target_sdk_version = 27
 
         versions = [
-                'kotlin_plugin'      : '1.2.21',
+                'kotlin_plugin'      : '1.2.31',
                 'android_plugin'     : '3.0.1',
 
                 // Support library version
                 // https://developer.android.com/topic/libraries/support-library/revisions.html
-                'support_lib'        : '27.0.2',
+                'support_lib'        : '27.1.0',
 
                 /*
                  * Gradle Android Maven plugin

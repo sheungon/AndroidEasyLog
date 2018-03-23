@@ -157,7 +157,7 @@ object Log {
         get() = "<" + android.os.Process.myTid() + ">"
 
     /**Possible values for setting log level in [.setLogLevel] */
-    @IntDef(VERBOSE.toLong(), DEBUG.toLong(), INFO.toLong(), WARN.toLong(), ERROR.toLong(), ASSERT.toLong(), NONE.toLong(), UNKNOWN.toLong())
+    @IntDef(VERBOSE, DEBUG, INFO, WARN, ERROR, ASSERT, NONE, UNKNOWN)
     @Retention(AnnotationRetention.SOURCE)
     annotation class LogLevel
 
