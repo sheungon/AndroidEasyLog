@@ -15,7 +15,7 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion target_sdk_version
-        versionCode 11
+        versionCode 12
         versionName properties.getProperty("lib.version")
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
