@@ -51,6 +51,7 @@ object Log {
 
     private const val LOG_MAX_CHAR_CHUNK = 2048
 
+    @JvmStatic
     private val LOGGER_V = object : Logger {
         override fun printLog(tag: String?, msg: String?): Int {
             return android.util.Log.v(tag, msg)
@@ -60,6 +61,7 @@ object Log {
             return android.util.Log.v(tag, msg, tr)
         }
     }
+    @JvmStatic
     private val LOGGER_D = object : Logger {
         override fun printLog(tag: String?, msg: String?): Int {
             return android.util.Log.d(tag, msg)
@@ -69,6 +71,7 @@ object Log {
             return android.util.Log.d(tag, msg, tr)
         }
     }
+    @JvmStatic
     private val LOGGER_I = object : Logger {
         override fun printLog(tag: String?, msg: String?): Int {
             return android.util.Log.i(tag, msg)
@@ -78,6 +81,7 @@ object Log {
             return android.util.Log.i(tag, msg, tr)
         }
     }
+    @JvmStatic
     private val LOGGER_W = object : Logger {
         override fun printLog(tag: String?, msg: String?): Int {
             return android.util.Log.w(tag, msg)
@@ -87,6 +91,7 @@ object Log {
             return android.util.Log.w(tag, msg, tr)
         }
     }
+    @JvmStatic
     private val LOGGER_E = object : Logger {
         override fun printLog(tag: String?, msg: String?): Int {
             return android.util.Log.e(tag, msg)
@@ -96,6 +101,7 @@ object Log {
             return android.util.Log.e(tag, msg, tr)
         }
     }
+    @JvmStatic
     private val LOGGER_WTF = object : Logger {
         override fun printLog(tag: String?, msg: String?): Int {
             return android.util.Log.wtf(tag, msg)
@@ -106,8 +112,11 @@ object Log {
         }
     }
 
+    @JvmStatic
     private var _DefaultTag = "Log"
+    @JvmStatic
     private var _ActionOnWtf: OnWtfListener? = null
+    @JvmStatic
     private var _ActionOnWtfDebug: OnWtfListener? = null
 
     /**
@@ -118,6 +127,7 @@ object Log {
      *
      */
     @LogLevel
+    @JvmStatic
     var logLevel: Int = UNKNOWN
         @LogLevel
         get() = if (field == UNKNOWN) {
@@ -138,9 +148,11 @@ object Log {
      *
      * @return true on log level other than NONE
      */
+    @JvmStatic
     val isDebuggable: Boolean
         get() = logLevel != NONE
 
+    @JvmStatic
     private val chunkPrefix: String
         get() = "<" + android.os.Process.myTid() + ">"
 
@@ -155,6 +167,7 @@ object Log {
      * [.w], [.e], [.wtf]
      * @param logTag The log tag
      */
+    @JvmStatic
     fun setDefaultLogTag(logTag: String) {
         _DefaultTag = logTag
     }
@@ -165,6 +178,7 @@ object Log {
      * @param action The action to be executed on [.wtf] called.
      * @see .setActionOnWtfDebug
      */
+    @JvmStatic
     fun setActionOnWtf(action: OnWtfListener?) {
         _ActionOnWtf = action
     }
@@ -175,6 +189,7 @@ object Log {
      * @param action The action to be executed on [.wtf] called.
      * @see .setActionOnWtf
      */
+    @JvmStatic
     fun setActionOnWtfDebug(action: OnWtfListener?) {
         _ActionOnWtfDebug = action
     }
@@ -185,6 +200,7 @@ object Log {
      * @see LogLevel
      *
      */
+    @JvmStatic
     fun isLoggable(@LogLevel level: Int): Boolean {
         return level != NONE && android.util.Log.isLoggable(_DefaultTag, level)
     }
@@ -194,6 +210,7 @@ object Log {
      *
      * @param logBuilder - A log message builder.
      */
+    @JvmStatic
     private fun getCustomPrefix(logBuilder: StringBuilder) {
 
         val ste = Throwable().stackTrace
@@ -239,6 +256,7 @@ object Log {
      * @param msg A log message
      * @return <tag>ClassName.Method Line <tid>
     </tid></tag></tid> */
+    @JvmStatic
     private fun getOutputLog(msg: String?): String {
 
         val sb = StringBuilder()
@@ -254,6 +272,7 @@ object Log {
      * @param tr The [Throwable] going to be converted
      * @return The Stacktrace string for the input [Throwable]
      */
+    @JvmStatic
     fun getStackTraceString(tr: Throwable?): String {
         return android.util.Log.getStackTraceString(tr)
     }
@@ -264,6 +283,7 @@ object Log {
      * @param msg A log message
      * @return no. of byte wrote to log
      */
+    @JvmStatic
     fun v(msg: String?): Int {
         return v(_DefaultTag, getOutputLog(msg))
     }
@@ -275,6 +295,7 @@ object Log {
      * @param msg A log message.
      * @return no. of byte wrote to log
      */
+    @JvmStatic
     fun v(tag: String?,
           msg: String?): Int {
         if (msg == null) {
@@ -296,6 +317,7 @@ object Log {
      * @param tr  A [Throwable] of an error.
      * @return no. of byte wrote to log
      */
+    @JvmStatic
     fun v(tag: String?,
           msg: String?,
           tr: Throwable?): Int {
@@ -313,6 +335,7 @@ object Log {
      * @param msg A log message.
      * @return no. of byte wrote to log
      */
+    @JvmStatic
     fun d(msg: String?): Int {
         return d(_DefaultTag, getOutputLog(msg))
     }
@@ -322,6 +345,7 @@ object Log {
      * @param msg A log message.
      * @return no. of byte wrote to log
      */
+    @JvmStatic
     fun d(tag: String?,
           msg: String?): Int {
         if (msg == null) {
@@ -342,6 +366,7 @@ object Log {
      * @param tr A [Throwable] related to this log.
      * @return no. of byte wrote to log
      */
+    @JvmStatic
     fun d(tag: String?,
           msg: String?,
           tr: Throwable?): Int {
@@ -359,6 +384,7 @@ object Log {
      * @param msg A log message.
      * @return no. of byte wrote to log
      */
+    @JvmStatic
     fun i(msg: String?): Int {
         return i(_DefaultTag, getOutputLog(msg))
     }
@@ -368,6 +394,7 @@ object Log {
      * @param msg A log message.
      * @return no. of byte wrote to log
      */
+    @JvmStatic
     fun i(tag: String?,
           msg: String?): Int {
         if (msg == null) {
@@ -388,6 +415,7 @@ object Log {
      * @param tr A [Throwable] related to this log.
      * @return no. of byte wrote to log
      */
+    @JvmStatic
     fun i(tag: String?,
           msg: String?,
           tr: Throwable?): Int {
@@ -405,6 +433,7 @@ object Log {
      * @param msg A log message.
      * @return no. of byte wrote to log
      */
+    @JvmStatic
     fun w(msg: String?): Int {
         return w(_DefaultTag, getOutputLog(msg))
     }
@@ -414,6 +443,7 @@ object Log {
      * @param msg A log message.
      * @return no. of byte wrote to log
      */
+    @JvmStatic
     fun w(tag: String?,
           msg: String?): Int {
         if (msg == null) {
@@ -434,6 +464,7 @@ object Log {
      * @param tr A [Throwable] related to this log.
      * @return no. of byte wrote to log
      */
+    @JvmStatic
     fun w(tag: String?,
           msg: String?,
           tr: Throwable?): Int {
@@ -451,6 +482,7 @@ object Log {
      * @param msg A log message.
      * @return no. of byte wrote to log
      */
+    @JvmStatic
     fun e(msg: String?): Int {
         return e(_DefaultTag, getOutputLog(msg))
     }
@@ -460,6 +492,7 @@ object Log {
      * @param msg A log message.
      * @return no. of byte wrote to log
      */
+    @JvmStatic
     fun e(tag: String?,
           msg: String?): Int {
         if (msg == null) {
@@ -477,6 +510,7 @@ object Log {
      * @param tr A [Throwable] related to this log.
      * @return no. of byte wrote to log
      */
+    @JvmStatic
     fun e(msg: String?, tr: Throwable?): Int {
         return e(_DefaultTag, msg, tr)
     }
@@ -489,6 +523,7 @@ object Log {
      * @param tr A [Throwable] related to this log.
      * @return no. of byte wrote to log
      */
+    @JvmStatic
     fun e(tag: String?,
           msg: String?,
           tr: Throwable?): Int {
@@ -506,6 +541,7 @@ object Log {
      * @param msg A log message.
      * @return no. of byte wrote to log
      */
+    @JvmStatic
     fun wtf(msg: String?): Int {
         return wtf(_DefaultTag, getOutputLog(msg))
     }
@@ -517,6 +553,7 @@ object Log {
      * @param tr A [Throwable] related to this log.
      * @return no. of byte wrote to log
      */
+    @JvmStatic
     fun wtf(msg: String?,
             tr: Throwable?): Int {
         return wtf(_DefaultTag, msg, tr)
@@ -530,6 +567,7 @@ object Log {
      * @param tr A [Throwable] related to this log.
      * @return no. of byte wrote to log
      */
+    @JvmStatic
     @JvmOverloads
     fun wtf(tag: String?,
             msg: String?,

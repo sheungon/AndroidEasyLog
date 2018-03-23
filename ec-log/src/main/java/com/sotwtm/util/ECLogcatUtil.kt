@@ -285,6 +285,7 @@ class ECLogcatUtil private constructor(context: Context) {
         const val LOG_TAG = "ECLogcatUtil"
         const val SHARED_PREF_FILE_KEY = "LogcatPref"
 
+        @JvmStatic
         val DEFAULT_LOGCAT_FORMAT = LogFormat.Time
         const val DEFAULT_LOGCAT_FILE_SIZE = 256 // KB
         const val DEFAULT_LOGCAT_MAX_NO_OF_LOG_FILES = 1
@@ -301,6 +302,7 @@ class ECLogcatUtil private constructor(context: Context) {
         private const val PREF_KEY_LOGCAT_FILTER_LOG_TAG = "LogcatFilterLogTag"
         private const val PREF_KEY_LOGCAT_PATH = "LogcatPath"
 
+        @JvmStatic
         internal val LOGCAT_SINCE_FORMAT = SimpleDateFormat("MM-dd HH:mm:ss.SSS", Locale.US)
 
         private const val REGEX_COLUMN_SEPARATOR = "(\\s+[A-Z]?\\s+|\\s+)"
@@ -310,9 +312,11 @@ class ECLogcatUtil private constructor(context: Context) {
         private const val PS_COL_NAME = "NAME"
 
         @Volatile
+        @JvmStatic
         private var instance: ECLogcatUtil? = null
 
         @Synchronized
+        @JvmStatic
         fun getInstance(context: Context): ECLogcatUtil {
 
             var localInstance = instance
@@ -327,6 +331,7 @@ class ECLogcatUtil private constructor(context: Context) {
         /**
          * @return The app executed by which Linux user.
          */
+        @JvmStatic
         fun getAppRunByUser(context: Context): String? {
 
             val sharedPreferences = getSharedPreferences(context)
@@ -420,6 +425,7 @@ class ECLogcatUtil private constructor(context: Context) {
             return myUserName
         }
 
+        @JvmStatic
         fun getLogcatPIDRunningBy(user: String): String? {
 
             var pid: String? = null
@@ -505,15 +511,18 @@ class ECLogcatUtil private constructor(context: Context) {
             return pid
         }
 
+        @JvmStatic
         fun isLogcatRunningBy(user: String): Boolean {
             return getLogcatPIDRunningBy(user) != null
         }
 
+        @JvmStatic
         private fun getEditor(context: Context): SharedPreferences.Editor {
             val sharedPref = context.getSharedPreferences(SHARED_PREF_FILE_KEY, Context.MODE_PRIVATE)
             return sharedPref.edit()
         }
 
+        @JvmStatic
         private fun getSharedPreferences(context: Context): SharedPreferences {
             return context.getSharedPreferences(SHARED_PREF_FILE_KEY, Context.MODE_PRIVATE)
         }
