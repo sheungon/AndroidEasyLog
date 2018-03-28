@@ -8,7 +8,7 @@ buildscript {
 
         versions = [
                 'kotlin_plugin'      : '1.2.31',
-                'android_plugin'     : '3.0.1',
+                'android_plugin'     : '3.1.0',
 
                 // Support library version
                 // https://developer.android.com/topic/libraries/support-library/revisions.html
@@ -45,7 +45,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath "com.android.tools.build:gradle:$versions.android_plugin"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin_plugin"
 
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:$versions.bintray_plugin"
