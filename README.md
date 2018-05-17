@@ -9,7 +9,7 @@ It also shows code line number in the log.<br />
 ## Adding to project
 ####Gradle
 ``` gradle
-compile 'com.sotwtm.util:ec-log:0.1.3'
+compile 'com.sotwtm.util:ec-log:0.2.0'
 ```
 
 ## Usage
