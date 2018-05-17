@@ -78,7 +78,6 @@ class ECLogcatUtilTest : TestCase() {
     }
 
     companion object {
-
         internal const val TAG = "ECLogcatUtilTest"
     }
 }

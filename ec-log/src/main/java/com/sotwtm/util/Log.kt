@@ -5,7 +5,7 @@ import android.support.annotation.IntDef
 
 /**
  * A logger that support enable/disable.
- * It can be used for replacing the [android.util.Log] easily
+ * It can be used for replacing the [android.util.Log] easily by replace the package path in import.
  *
  * @author sheungon
  */
@@ -53,71 +53,64 @@ object Log {
 
     @JvmStatic
     private val LOGGER_V = object : Logger {
-        override fun printLog(tag: String?, msg: String?): Int {
-            return android.util.Log.v(tag, msg)
-        }
-
-        override fun printLog(tag: String?, msg: String?, tr: Throwable?): Int {
-            return android.util.Log.v(tag, msg, tr)
-        }
+        override fun printLog(tag: String?, msg: String?): Int = android.util.Log.v(tag, msg)
+        override fun printLog(tag: String?, msg: String?, tr: Throwable?): Int = android.util.Log.v(tag, msg, tr)
     }
+
     @JvmStatic
     private val LOGGER_D = object : Logger {
-        override fun printLog(tag: String?, msg: String?): Int {
-            return android.util.Log.d(tag, msg)
-        }
-
-        override fun printLog(tag: String?, msg: String?, tr: Throwable?): Int {
-            return android.util.Log.d(tag, msg, tr)
-        }
+        override fun printLog(tag: String?, msg: String?): Int = android.util.Log.d(tag, msg)
+        override fun printLog(tag: String?, msg: String?, tr: Throwable?): Int = android.util.Log.d(tag, msg, tr)
     }
+
     @JvmStatic
     private val LOGGER_I = object : Logger {
-        override fun printLog(tag: String?, msg: String?): Int {
-            return android.util.Log.i(tag, msg)
-        }
-
-        override fun printLog(tag: String?, msg: String?, tr: Throwable?): Int {
-            return android.util.Log.i(tag, msg, tr)
-        }
+        override fun printLog(tag: String?, msg: String?): Int = android.util.Log.i(tag, msg)
+        override fun printLog(tag: String?, msg: String?, tr: Throwable?): Int = android.util.Log.i(tag, msg, tr)
     }
+
     @JvmStatic
     private val LOGGER_W = object : Logger {
-        override fun printLog(tag: String?, msg: String?): Int {
-            return android.util.Log.w(tag, msg)
-        }
-
-        override fun printLog(tag: String?, msg: String?, tr: Throwable?): Int {
-            return android.util.Log.w(tag, msg, tr)
-        }
+        override fun printLog(tag: String?, msg: String?): Int = android.util.Log.w(tag, msg)
+        override fun printLog(tag: String?, msg: String?, tr: Throwable?): Int = android.util.Log.w(tag, msg, tr)
     }
+
     @JvmStatic
     private val LOGGER_E = object : Logger {
-        override fun printLog(tag: String?, msg: String?): Int {
-            return android.util.Log.e(tag, msg)
-        }
-
-        override fun printLog(tag: String?, msg: String?, tr: Throwable?): Int {
-            return android.util.Log.e(tag, msg, tr)
-        }
+        override fun printLog(tag: String?, msg: String?): Int = android.util.Log.e(tag, msg)
+        override fun printLog(tag: String?, msg: String?, tr: Throwable?): Int = android.util.Log.e(tag, msg, tr)
     }
+
     @JvmStatic
     private val LOGGER_WTF = object : Logger {
-        override fun printLog(tag: String?, msg: String?): Int {
-            return android.util.Log.wtf(tag, msg)
-        }
-
-        override fun printLog(tag: String?, msg: String?, tr: Throwable?): Int {
-            return android.util.Log.wtf(tag, msg, tr)
-        }
+        override fun printLog(tag: String?, msg: String?): Int = android.util.Log.wtf(tag, msg)
+        override fun printLog(tag: String?, msg: String?, tr: Throwable?): Int = android.util.Log.wtf(tag, msg, tr)
     }
 
+    /**
+     * The default log tag for [v], [d], [i], [w], [e], [wtf]
+     */
+    @Suppress("MemberVisibilityCanBePrivate")
     @JvmStatic
-    private var _DefaultTag = "Log"
+    var defaultLogTag: String = "ECLog"
+
+    /**
+     * The extra action to do on method [wtf]* or overloading methods called.
+     * This action will be taken when it is release build.
+     * @see actionOnWtfDebug
+     */
+    @Suppress("MemberVisibilityCanBePrivate")
     @JvmStatic
-    private var _ActionOnWtf: OnWtfListener? = null
+    var actionOnWtf: OnWtfListener? = null
+
+    /**
+     * The extra action to do on method [wtf]* or overloading methods called.
+     * This action will be taken when it is Debug build.
+     * @see actionOnWtf
+     */
+    @Suppress("MemberVisibilityCanBePrivate")
     @JvmStatic
-    private var _ActionOnWtfDebug: OnWtfListener? = null
+    var actionOnWtfDebug: OnWtfListener? = null
 
     /**
      * Set loggable level.
@@ -130,17 +123,16 @@ object Log {
     @JvmStatic
     var logLevel: Int = UNKNOWN
         @LogLevel
-        get() = if (field == UNKNOWN) {
-            if (BuildConfig.DEBUG) VERBOSE else NONE
-        } else field
+        get() =
+            if (field == UNKNOWN) {
+                if (BuildConfig.DEBUG) VERBOSE else NONE
+            } else field
         set(@LogLevel lLevel) = when (lLevel) {
             VERBOSE, DEBUG, INFO, WARN, ERROR, ASSERT, NONE -> field = lLevel
-
             UNKNOWN -> {
                 // Keep it as original one. Shouldn't enter here anyway
             }
-
-            else -> throw IllegalArgumentException("Invalid log level passed to setLogLevel: " + lLevel)
+            else -> throw IllegalArgumentException("Invalid log level passed to setLogLevel: $lLevel")
         }
 
     /**
@@ -163,47 +155,14 @@ object Log {
 
 
     /**
-     * The default log tag for [.v], [.d], [.i],
-     * [.w], [.e], [.wtf]
-     * @param logTag The log tag
-     */
-    @JvmStatic
-    fun setDefaultLogTag(logTag: String) {
-        _DefaultTag = logTag
-    }
-
-    /**
-     * The extra action to do on method [.wtf]* or overloading methods called.
-     * This action will be taken when it is release build.
-     * @param action The action to be executed on [.wtf] called.
-     * @see .setActionOnWtfDebug
-     */
-    @JvmStatic
-    fun setActionOnWtf(action: OnWtfListener?) {
-        _ActionOnWtf = action
-    }
-
-    /**
-     * The extra action to do on method [.wtf]* or overloading methods called.
-     * This action will be taken when it is Debug build.
-     * @param action The action to be executed on [.wtf] called.
-     * @see .setActionOnWtf
-     */
-    @JvmStatic
-    fun setActionOnWtfDebug(action: OnWtfListener?) {
-        _ActionOnWtfDebug = action
-    }
-
-    /**
      * @param level The log level going to check.
      * @return `true` if the input level is loggable.
      * @see LogLevel
      *
      */
     @JvmStatic
-    fun isLoggable(@LogLevel level: Int): Boolean {
-        return level != NONE && android.util.Log.isLoggable(_DefaultTag, level)
-    }
+    fun isLoggable(@LogLevel level: Int): Boolean =
+            level != NONE && android.util.Log.isLoggable(defaultLogTag, level)
 
     /**
      * Append log for prefix with Class name, method name line number and tid in `logBuilder`
@@ -260,10 +219,8 @@ object Log {
     private fun getOutputLog(msg: String?): String {
 
         val sb = StringBuilder()
-
         getCustomPrefix(sb)
-
-        sb.append(msg)
+        if (msg != null) sb.append(msg)
 
         return sb.toString()
     }
@@ -273,296 +230,153 @@ object Log {
      * @return The Stacktrace string for the input [Throwable]
      */
     @JvmStatic
-    fun getStackTraceString(tr: Throwable?): String {
-        return android.util.Log.getStackTraceString(tr)
-    }
+    fun getStackTraceString(tr: Throwable?): String = android.util.Log.getStackTraceString(tr)
 
     /**
-     * Please put UI related log here.
-     *
-     * @param msg A log message
-     * @return no. of byte wrote to log
-     */
-    @JvmStatic
-    fun v(msg: String?): Int {
-        return v(_DefaultTag, getOutputLog(msg))
-    }
-
-    /**
-     * Please put UI related log here.
-     *
-     * @param tag A log tag for this Log message.
-     * @param msg A log message.
-     * @return no. of byte wrote to log
-     */
-    @JvmStatic
-    fun v(tag: String?,
-          msg: String?): Int {
-        if (msg == null) {
-            return 0
-        }
-
-        return if (logLevel > VERBOSE) {
-            0
-        } else printLog(LOGGER_V, tag, msg)
-
-    }
-
-    /**
-     * Please put UI related log here. Providing either parameter msg or tr is
-     * enough.
-     *
-     * @param tag A log tag for this Log message.
+     * For show UI related log or other repeating logs.
      * @param msg A log message.
      * @param tr  A [Throwable] of an error.
      * @return no. of byte wrote to log
      */
     @JvmStatic
+    @JvmOverloads
+    fun v(msg: String?,
+          tr: Throwable? = null): Int = v(defaultLogTag, msg, tr)
+
+    /**
+     * For show UI related log or other repeating logs.
+     * @param tag A log tag for this log message.
+     * @param msg A log message.
+     * @param tr  A [Throwable] of an error.
+     * @return no. of byte wrote to log
+     */
+    @JvmStatic
+    @JvmOverloads
     fun v(tag: String?,
           msg: String?,
-          tr: Throwable?): Int {
-        if (msg == null && tr == null) {
-            return 0
-        }
-
-        return if (logLevel > VERBOSE) {
-            0
-        } else printLog(LOGGER_V, tag, msg, tr)
-
-    }
+          tr: Throwable? = null): Int =
+            if (logLevel > VERBOSE || (msg == null && tr == null)) 0
+            else printLog(LOGGER_V, tag, msg, tr)
 
     /**
-     * @param msg A log message.
-     * @return no. of byte wrote to log
-     */
-    @JvmStatic
-    fun d(msg: String?): Int {
-        return d(_DefaultTag, getOutputLog(msg))
-    }
-
-    /**
-     * @param tag A log tag for this Log message.
-     * @param msg A log message.
-     * @return no. of byte wrote to log
-     */
-    @JvmStatic
-    fun d(tag: String?,
-          msg: String?): Int {
-        if (msg == null) {
-            return 0
-        }
-
-        return if (logLevel > DEBUG) {
-            0
-        } else printLog(LOGGER_D, tag, msg)
-
-    }
-
-    /**
-     * Providing either parameter msg or tr is enough.
-     *
-     * @param tag A log tag for this Log message.
+     * For debug level message
      * @param msg A log message.
      * @param tr A [Throwable] related to this log.
      * @return no. of byte wrote to log
      */
     @JvmStatic
+    @JvmOverloads
+    fun d(msg: String?,
+          tr: Throwable? = null): Int = d(defaultLogTag, getOutputLog(msg), tr)
+
+    /**
+     * For debug level message
+     * @param tag A log tag for this log message.
+     * @param msg A log message.
+     * @param tr A [Throwable] related to this log.
+     * @return no. of byte wrote to log
+     */
+    @JvmStatic
+    @JvmOverloads
     fun d(tag: String?,
           msg: String?,
-          tr: Throwable?): Int {
-        if (msg == null && tr == null) {
-            return 0
-        }
-
-        return if (logLevel > DEBUG) {
-            0
-        } else printLog(LOGGER_D, tag, msg, tr)
-
-    }
+          tr: Throwable? = null): Int =
+            if (logLevel > DEBUG || (msg == null && tr == null)) 0
+            else printLog(LOGGER_D, tag, msg, tr)
 
     /**
-     * @param msg A log message.
-     * @return no. of byte wrote to log
-     */
-    @JvmStatic
-    fun i(msg: String?): Int {
-        return i(_DefaultTag, getOutputLog(msg))
-    }
-
-    /**
-     * @param tag A log tag for this Log message.
-     * @param msg A log message.
-     * @return no. of byte wrote to log
-     */
-    @JvmStatic
-    fun i(tag: String?,
-          msg: String?): Int {
-        if (msg == null) {
-            return 0
-        }
-
-        return if (logLevel > INFO) {
-            0
-        } else printLog(LOGGER_I, tag, msg)
-
-    }
-
-    /**
-     * Providing either parameter msg or tr is enough.
-     *
-     * @param tag A log tag for this Log message.
+     * For info message
      * @param msg A log message.
      * @param tr A [Throwable] related to this log.
      * @return no. of byte wrote to log
      */
     @JvmStatic
+    @JvmOverloads
+    fun i(msg: String?,
+          tr: Throwable? = null): Int = i(defaultLogTag, getOutputLog(msg), tr)
+
+    /**
+     * For info message
+     * @param tag A log tag for this log message.
+     * @param msg A log message.
+     * @param tr A [Throwable] related to this log.
+     * @return no. of byte wrote to log
+     */
+    @JvmStatic
+    @JvmOverloads
     fun i(tag: String?,
           msg: String?,
-          tr: Throwable?): Int {
-        if (msg == null && tr == null) {
-            return 0
-        }
-
-        return if (logLevel > INFO) {
-            0
-        } else printLog(LOGGER_I, tag, msg, tr)
-
-    }
+          tr: Throwable? = null): Int =
+            if (logLevel > INFO || (msg == null && tr == null)) 0
+            else printLog(LOGGER_I, tag, msg, tr)
 
     /**
-     * @param msg A log message.
-     * @return no. of byte wrote to log
-     */
-    @JvmStatic
-    fun w(msg: String?): Int {
-        return w(_DefaultTag, getOutputLog(msg))
-    }
-
-    /**
-     * @param tag A log tag for this Log message.
-     * @param msg A log message.
-     * @return no. of byte wrote to log
-     */
-    @JvmStatic
-    fun w(tag: String?,
-          msg: String?): Int {
-        if (msg == null) {
-            return 0
-        }
-
-        return if (logLevel > WARN) {
-            0
-        } else printLog(LOGGER_W, tag, msg)
-
-    }
-
-    /**
-     * Providing either parameter msg or tr is enough.
-     *
-     * @param tag A log tag for this Log message.
+     * For warning message.
      * @param msg A log message.
      * @param tr A [Throwable] related to this log.
      * @return no. of byte wrote to log
      */
     @JvmStatic
+    @JvmOverloads
+    fun w(msg: String?,
+          tr: Throwable? = null): Int = w(defaultLogTag, getOutputLog(msg), tr)
+
+    /**
+     * For warning message.
+     * @param tag A log tag for this log message.
+     * @param msg A log message.
+     * @param tr A [Throwable] related to this log.
+     * @return no. of byte wrote to log
+     */
+    @JvmStatic
+    @JvmOverloads
     fun w(tag: String?,
           msg: String?,
-          tr: Throwable?): Int {
-        if (msg == null && tr == null) {
-            return 0
-        }
+          tr: Throwable? = null): Int =
+            if (logLevel > WARN || (msg == null && tr == null)) 0
+            else printLog(LOGGER_W, tag, msg, tr)
 
-        return if (logLevel > WARN) {
-            0
-        } else printLog(LOGGER_W, tag, msg, tr)
-
-    }
 
     /**
-     * @param msg A log message.
-     * @return no. of byte wrote to log
-     */
-    @JvmStatic
-    fun e(msg: String?): Int {
-        return e(_DefaultTag, getOutputLog(msg))
-    }
-
-    /**
-     * @param tag A log tag for this Log message.
-     * @param msg A log message.
-     * @return no. of byte wrote to log
-     */
-    @JvmStatic
-    fun e(tag: String?,
-          msg: String?): Int {
-        if (msg == null) {
-            return 0
-        }
-
-        return if (logLevel > ERROR) {
-            0
-        } else printLog(LOGGER_E, tag, msg)
-
-    }
-
-    /**
+     * For error message
      * @param msg A log message.
      * @param tr A [Throwable] related to this log.
      * @return no. of byte wrote to log
      */
     @JvmStatic
-    fun e(msg: String?, tr: Throwable?): Int {
-        return e(_DefaultTag, msg, tr)
-    }
+    @JvmOverloads
+    fun e(msg: String?,
+          tr: Throwable? = null): Int = e(defaultLogTag, msg, tr)
 
     /**
-     * Providing either parameter msg or tr is enough.
-     *
-     * @param tag A log tag for this Log message.
+     * For error message
+     * @param tag A log tag for this log message.
      * @param msg A log message.
      * @param tr A [Throwable] related to this log.
      * @return no. of byte wrote to log
      */
     @JvmStatic
+    @JvmOverloads
     fun e(tag: String?,
           msg: String?,
-          tr: Throwable?): Int {
-        if (msg == null && tr == null) {
-            return 0
-        }
-
-        return if (logLevel > ERROR) {
-            0
-        } else printLog(LOGGER_E, tag, msg, tr)
-
-    }
+          tr: Throwable? = null): Int =
+            if (logLevel > ERROR || (msg == null && tr == null)) 0
+            else printLog(LOGGER_E, tag, msg, tr)
 
     /**
-     * @param msg A log message.
-     * @return no. of byte wrote to log
-     */
-    @JvmStatic
-    fun wtf(msg: String?): Int {
-        return wtf(_DefaultTag, getOutputLog(msg))
-    }
-
-    /**
-     * Providing either parameter msg or tr is enough.
-     *
+     * For What a Terrible Failure
      * @param msg A log message.
      * @param tr A [Throwable] related to this log.
      * @return no. of byte wrote to log
      */
     @JvmStatic
+    @JvmOverloads
     fun wtf(msg: String?,
-            tr: Throwable?): Int {
-        return wtf(_DefaultTag, msg, tr)
-    }
+            tr: Throwable? = null): Int = wtf(defaultLogTag, msg, tr)
 
     /**
-     * Providing either parameter msg or tr is enough.
-     *
-     * @param tag A log tag for this Log message.
+     * For What a Terrible Failure
+     * @param tag A log tag for this log message.
      * @param msg A log message.
      * @param tr A [Throwable] related to this log.
      * @return no. of byte wrote to log
@@ -571,32 +385,27 @@ object Log {
     @JvmOverloads
     fun wtf(tag: String?,
             msg: String?,
-            tr: Throwable? = null): Int {
+            tr: Throwable? = null): Int =
+            if (logLevel > ASSERT || (msg == null && tr == null)) 0
+            else {
+                val wrote = printLog(LOGGER_WTF, tag, msg, tr)
 
-        if (msg == null && tr == null) {
-            return 0
-        }
+                // runtime exception if you turn on assert
+                if (BuildConfig.DEBUG) {
+                    actionOnWtfDebug?.onWtf(msg, tr)
+                            ?: {
+                                if (tr == null) {
+                                    throw RuntimeException(msg)
+                                } else {
+                                    throw RuntimeException(msg, tr)
+                                }
+                            }.invoke()
+                } else {
+                    actionOnWtf?.onWtf(msg, tr)
+                }
 
-        if (logLevel > ASSERT) {
-            return 0
-        }
-
-        // runtime exception if you turn on assert
-        if (BuildConfig.DEBUG) {
-            _ActionOnWtfDebug?.onWtf(msg, tr)
-                    ?: {
-                        if (tr == null) {
-                            throw RuntimeException(msg)
-                        } else {
-                            throw RuntimeException(msg, tr)
-                        }
-                    }.invoke()
-        } else {
-            _ActionOnWtf?.onWtf(msg, tr)
-        }
-
-        return printLog(LOGGER_WTF, tag, msg, tr)
-    }
+                wrote
+            }
 
     private fun printLog(logger: Logger,
                          tag: String?,

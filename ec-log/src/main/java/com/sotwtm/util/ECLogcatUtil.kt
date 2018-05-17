@@ -57,7 +57,7 @@ class ECLogcatUtil private constructor(context: Context) {
             Log.w(LOG_TAG, "Cannot start logcat due to app user is unknown.")
             return false
         }
-        Log.v(LOG_TAG, "App running by : " + username)
+        Log.v(LOG_TAG, "App running by : $username")
 
         if (isLogcatRunningBy(username)) {
             Log.v(LOG_TAG, "logcat running already")
@@ -66,7 +66,7 @@ class ECLogcatUtil private constructor(context: Context) {
 
         val sharedPreferences = getSharedPreferences(context)
 
-        val logcatPath : String? = sharedPreferences.getString(PREF_KEY_LOGCAT_PATH, null)
+        val logcatPath: String? = sharedPreferences.getString(PREF_KEY_LOGCAT_PATH, null)
         if (TextUtils.isEmpty(logcatPath)) {
             throw NullPointerException("Logcat path is not set yet!")
         }
@@ -142,7 +142,7 @@ class ECLogcatUtil private constructor(context: Context) {
             val process = processBuilder.start()
             process.waitFor()
             val exitCode = process.exitValue()
-            Log.v(LOG_TAG, "Stopped logcat exit code : " + exitCode)
+            Log.v(LOG_TAG, "Stopped logcat exit code : $exitCode")
             return true
         } catch (e: Exception) {
             Log.e(LOG_TAG, "Error on kill logcat", e)
@@ -167,7 +167,7 @@ class ECLogcatUtil private constructor(context: Context) {
 
 
         val logcatStopped = stopLogcat()
-        Log.d("Logcat stopped : " + logcatStopped)
+        Log.d("Logcat stopped : $logcatStopped")
 
         getEditor(context).remove(PREF_KEY_LOGCAT_SINCE).apply()
         Log.d("Reset logcat")
@@ -192,10 +192,10 @@ class ECLogcatUtil private constructor(context: Context) {
         val logcatSince = LOGCAT_SINCE_FORMAT.format(Date())
 
         val logcatStopped = stopLogcat()
-        Log.d("Logcat stopped : " + logcatStopped)
+        Log.d("Logcat stopped : $logcatStopped")
 
         getEditor(context).putString(PREF_KEY_LOGCAT_SINCE, logcatSince).apply()
-        Log.d("Clear logcat since : " + logcatSince)
+        Log.d("Clear logcat since : $logcatSince")
 
         return startLogcat()
     }
@@ -339,7 +339,7 @@ class ECLogcatUtil private constructor(context: Context) {
 
             if (TextUtils.isEmpty(myUserName)) {
                 val packageName = context.packageName
-                Log.d(LOG_TAG, "Retrieving application username. ApplicationPackage = " + packageName)
+                Log.d(LOG_TAG, "Retrieving application username. ApplicationPackage = $packageName")
 
                 /*Don't user `grep` as it could be not available on some devices.*/
                 // Execute `ps`
@@ -390,7 +390,7 @@ class ECLogcatUtil private constructor(context: Context) {
 
                         if (packageName == columns[nameColumn]) {
                             myUserName = columns[userColumn]
-                            Log.d(LOG_TAG, "Application executed by user : " + myUserName)
+                            Log.d(LOG_TAG, "Application executed by user : $myUserName")
                             break
                         }
                         line = bf.readLine()
