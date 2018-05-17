@@ -116,6 +116,7 @@ class MainActivity : AppCompatActivity() {
 
     fun onClickLog() {
         Log.d("Clicked at : " + Date())
+        Test().log()
     }
 
     private fun updateLogView() {
@@ -163,6 +164,12 @@ class MainActivity : AppCompatActivity() {
             when (event) {
                 FileObserver.MODIFY, FileObserver.CLOSE_WRITE, FileObserver.DELETE, FileObserver.DELETE_SELF -> activity.runOnUiThread(mUpdateLogTask)
             }
+        }
+    }
+
+    private class Test {
+        fun log() {
+            Log.d("Clicked at : " + Date())
         }
     }
 }

@@ -50,7 +50,7 @@ dependencies {
     /*
      * Kotlin
      * */
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$versions.kotlin_plugin"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-$versions.kotlin_env:$versions.kotlin_plugin"
     kapt "com.android.databinding:compiler:$versions.android_plugin"
 
     implementation "com.android.support:appcompat-v7:$versions.support_lib"
