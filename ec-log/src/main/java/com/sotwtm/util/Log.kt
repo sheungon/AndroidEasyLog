@@ -172,38 +172,29 @@ object Log {
     @JvmStatic
     private fun getCustomPrefix(logBuilder: StringBuilder) {
 
-        val ste = Throwable().stackTrace
-
         logBuilder.append("<")
         logBuilder.append(android.os.Process.myTid())
-        logBuilder.append(">[(")
+        logBuilder.append(">[")
 
-        if (null != ste && ste.size >= 4) {
+        Throwable().stackTrace?.let { stackTrace ->
 
-            val stackTraceClass = ste[3]
+            // Look for Log class's upper level
+            val outerClass = stackTrace.find { it.className != javaClass.name } ?: return@let
 
-            val className = stackTraceClass.className
-            val subClassIndex = className.indexOf('$')
-            val subClass: String? = if (subClassIndex >= 0) {
-                className.substring(subClassIndex)
-            } else {
-                null
-            }
+            val className = outerClass.className
+            val subClass: String = className.substringAfter('$', "")
 
-            val javaName = stackTraceClass.fileName
-            val method = stackTraceClass.methodName
-            val line = stackTraceClass.lineNumber
-
-            // Logcat supports lookup to source code with this format
-            logBuilder.append(javaName)
+            // Form a log that supports lookup to source code with this format
+            logBuilder.append("(")
+                    .append(outerClass.fileName)
                     .append(":")
-                    .append(line)
+                    .append(outerClass.lineNumber)
                     .append(")")
-            if (subClass != null) {
+            if (subClass.isNotEmpty()) {
                 logBuilder.append(subClass)
             }
             logBuilder.append("#")
-                    .append(method)
+                    .append(outerClass.methodName)
         }
 
         logBuilder.append("] ")
@@ -241,7 +232,9 @@ object Log {
     @JvmStatic
     @JvmOverloads
     fun v(msg: String?,
-          tr: Throwable? = null): Int = v(defaultLogTag, msg, tr)
+          tr: Throwable? = null): Int =
+            if (logLevel > VERBOSE) 0
+            else printLog(LOGGER_V, defaultLogTag, getOutputLog(msg), tr)
 
     /**
      * For show UI related log or other repeating logs.
@@ -267,7 +260,9 @@ object Log {
     @JvmStatic
     @JvmOverloads
     fun d(msg: String?,
-          tr: Throwable? = null): Int = d(defaultLogTag, getOutputLog(msg), tr)
+          tr: Throwable? = null): Int =
+            if (logLevel > DEBUG) 0
+            else printLog(LOGGER_D, defaultLogTag, getOutputLog(msg), tr)
 
     /**
      * For debug level message
@@ -293,7 +288,9 @@ object Log {
     @JvmStatic
     @JvmOverloads
     fun i(msg: String?,
-          tr: Throwable? = null): Int = i(defaultLogTag, getOutputLog(msg), tr)
+          tr: Throwable? = null): Int =
+            if (logLevel > INFO) 0
+            else printLog(LOGGER_I, defaultLogTag, getOutputLog(msg), tr)
 
     /**
      * For info message
@@ -319,7 +316,9 @@ object Log {
     @JvmStatic
     @JvmOverloads
     fun w(msg: String?,
-          tr: Throwable? = null): Int = w(defaultLogTag, getOutputLog(msg), tr)
+          tr: Throwable? = null): Int =
+            if (logLevel > WARN) 0
+            else printLog(LOGGER_W, defaultLogTag, getOutputLog(msg), tr)
 
     /**
      * For warning message.
@@ -346,7 +345,9 @@ object Log {
     @JvmStatic
     @JvmOverloads
     fun e(msg: String?,
-          tr: Throwable? = null): Int = e(defaultLogTag, msg, tr)
+          tr: Throwable? = null): Int =
+            if (logLevel > ERROR) 0
+            else printLog(LOGGER_E, defaultLogTag, getOutputLog(msg), tr)
 
     /**
      * For error message
@@ -372,7 +373,7 @@ object Log {
     @JvmStatic
     @JvmOverloads
     fun wtf(msg: String?,
-            tr: Throwable? = null): Int = wtf(defaultLogTag, msg, tr)
+            tr: Throwable? = null): Int = wtf(defaultLogTag, getOutputLog(msg), tr)
 
     /**
      * For What a Terrible Failure
