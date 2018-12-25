@@ -421,10 +421,10 @@ object Log {
             var i = 0
             while (i < msg.length) {
                 val endPos = i + LOG_MAX_CHAR_CHUNK
-                if (endPos <= msg.length) {
-                    wroteByte += logger.printLog(tag, chunkCount.toString() + prefix + msg.substring(i, endPos))
+                wroteByte += if (endPos <= msg.length) {
+                    logger.printLog(tag, chunkCount.toString() + prefix + msg.substring(i, endPos))
                 } else {
-                    wroteByte += logger.printLog(tag, chunkCount.toString() + prefix + msg.substring(i))
+                    logger.printLog(tag, chunkCount.toString() + prefix + msg.substring(i))
                 }
                 chunkCount++
                 i += LOG_MAX_CHAR_CHUNK

@@ -41,12 +41,12 @@ object FileUtil {
 
             return true
         } catch (e: Exception) {
-            Log.e("Error on read file : " + file, e)
+            Log.e("Error on read file : $file", e)
         } finally {
             try {
                 br?.close()
             } catch (e: Exception) {
-                Log.e("Error on close read file : " + file, e)
+                Log.e("Error on close read file : $file", e)
             }
         }
 
