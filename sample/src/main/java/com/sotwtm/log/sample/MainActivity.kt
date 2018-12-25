@@ -137,7 +137,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val logContentBuilder = StringBuilder()
-        FileUtil.readTextFile(logFile, logContentBuilder)
+        logFile.readTextFile(logContentBuilder)
         binding.setLog(logContentBuilder.toString())
 
         // Force log scroll view to the bottom
