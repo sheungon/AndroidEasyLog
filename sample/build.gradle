@@ -51,10 +51,8 @@ dependencies {
      * Kotlin
      * */
     implementation "org.jetbrains.kotlin:kotlin-stdlib-$versions.kotlin_env:$versions.kotlin_plugin"
-    kapt "com.android.databinding:compiler:$versions.android_plugin"
 
     implementation "com.android.support:appcompat-v7:$versions.support_lib"
-
 
 
     androidTestImplementation("com.android.support.test.espresso:espresso-core:$versions.espresso", {
