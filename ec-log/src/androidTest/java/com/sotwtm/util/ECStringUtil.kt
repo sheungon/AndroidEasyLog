@@ -132,13 +132,15 @@ object ECStringUtil {
      * @return a base64 encoded String.
      */
     @JvmOverloads
-    fun encodeBase64(data: String,
-                     encoding: String = "UTF-8"): String? {
+    fun encodeBase64(
+        data: String,
+        encoding: String = "UTF-8"
+    ): String? {
         val bytes: ByteArray
         try {
             bytes = data.toByteArray(charset(encoding))
         } catch (uee: UnsupportedEncodingException) {
-            Log.e("UnsupportedEncoding : " + encoding, uee)
+            Log.e("UnsupportedEncoding : $encoding", uee)
             return null
         }
 
@@ -153,8 +155,10 @@ object ECStringUtil {
      * @return the decoded String.
      */
     @JvmOverloads
-    fun decodeBase64(data: String,
-                     encoding: String = "UTF-8"): ByteArray {
+    fun decodeBase64(
+        data: String,
+        encoding: String = "UTF-8"
+    ): ByteArray {
         var bytes: ByteArray
         try {
             bytes = data.toByteArray(charset(encoding))
@@ -180,8 +184,10 @@ object ECStringUtil {
      * @return a random String of numbers and letters of the specified length.
      */
     @JvmOverloads
-    fun randomString(length: Int,
-                     sourceChars: CharArray = NUMBERS_AND_LETTERS): String {
+    fun randomString(
+        length: Int,
+        sourceChars: CharArray = NUMBERS_AND_LETTERS
+    ): String {
         if (length < 1) {
             return ""
         }

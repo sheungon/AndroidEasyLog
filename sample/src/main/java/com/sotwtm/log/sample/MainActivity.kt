@@ -81,23 +81,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onClickStart() {
-        ECLogcatUtil.getInstance(this).startLogcat()
+        ECLogcatUtil.getInstance(application).startLogcat()
         mLogObserver?.stopWatching()
         mLogObserver?.startWatching()
     }
 
     fun onClickStop() {
-        ECLogcatUtil.getInstance(this).stopLogcat()
+        ECLogcatUtil.getInstance(application).stopLogcat()
     }
 
     fun onClickClear() {
-        ECLogcatUtil.getInstance(this).clearLogcat()
+        ECLogcatUtil.getInstance(application).clearLogcat()
         mLogObserver?.stopWatching()
         mLogObserver?.startWatching()
     }
 
     fun onClickReset() {
-        ECLogcatUtil.getInstance(this).resetLogcat()
+        ECLogcatUtil.getInstance(application).resetLogcat()
         mLogObserver?.stopWatching()
         mLogObserver?.startWatching()
     }
@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
 
         val binding = mBinding ?: return
 
-        val logcatUtil = ECLogcatUtil.getInstance(this)
+        val logcatUtil = ECLogcatUtil.getInstance(application)
         logcatUtil.setFilterLogTag(binding.filterText.text.toString())
         logcatUtil.stopLogcat()
         logcatUtil.startLogcat()

@@ -13,7 +13,6 @@ import java.io.FileReader
 
 /**
  * Read a text file as [String]
- * @param file To be read.
  * @param stringBuilder A builder to storage the file content. All content will be append to
  * the end of this [StringBuilder]
  * @return `true` if the operation was successfully executed.

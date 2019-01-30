@@ -1,11 +1,11 @@
 package com.sotwtm.util
 
+import android.app.Application
 import android.content.Context
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
-import android.text.TextUtils
-import org.junit.Assert
 import junit.framework.TestCase
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,6 +18,9 @@ import java.io.File
 @RunWith(AndroidJUnit4::class)
 class ECLogcatUtilTest : TestCase() {
 
+    /**
+     * Clean up SharedPreferences before test
+     * */
     @Before
     @Throws(Exception::class)
     fun clearSettings() {
@@ -25,12 +28,15 @@ class ECLogcatUtilTest : TestCase() {
         context.getSharedPreferences(ECLogcatUtil.SHARED_PREF_FILE_KEY, Context.MODE_PRIVATE).edit().clear().apply()
     }
 
+    /**
+     * Test case for [ECLogcatUtil] to check if it works normally.
+     * */
     @Test
     @Throws(Exception::class)
     fun testLogcat() {
 
-        val context = InstrumentationRegistry.getTargetContext()
-        val logcatUtil = ECLogcatUtil.getInstance(context)
+        val application = InstrumentationRegistry.getTargetContext().applicationContext as Application
+        val logcatUtil = ECLogcatUtil.getInstance(application)
 
         Assert.assertNotNull(logcatUtil)
 
@@ -55,12 +61,16 @@ class ECLogcatUtilTest : TestCase() {
             Assert.assertTrue(true)
         }
 
-        val appRunByUser = ECLogcatUtil.getAppRunByUser(context)
-        Assert.assertFalse(TextUtils.isEmpty(appRunByUser))
-        Assert.assertNull(ECLogcatUtil.getLogcatPIDRunningBy(appRunByUser!!))
+        val appRunByUser = ECLogcatUtil.getAppRunByUser(application)
+        if (appRunByUser == null) {
+            Assert.assertNotNull(appRunByUser)
+            return
+        }
+        Assert.assertFalse(appRunByUser.isEmpty())
+        Assert.assertNull(ECLogcatUtil.getLogcatPIDRunBy(appRunByUser))
         Assert.assertFalse(ECLogcatUtil.isLogcatRunningBy(appRunByUser))
 
-        val logFile = File(context.cacheDir, "log.txt")
+        val logFile = File(application.cacheDir, "log.txt")
         Assert.assertTrue(!logFile.isFile || logFile.delete())
         logcatUtil.setLogcatDest(logFile)
         logcatUtil.setFilterLogTag(TAG)
@@ -69,7 +79,7 @@ class ECLogcatUtilTest : TestCase() {
         Log.d(TAG, "This is a test log.")
         Thread.sleep(100)
 
-        Assert.assertNotNull(ECLogcatUtil.getLogcatPIDRunningBy(appRunByUser))
+        Assert.assertNotNull(ECLogcatUtil.getLogcatPIDRunBy(appRunByUser))
         Assert.assertTrue(ECLogcatUtil.isLogcatRunningBy(appRunByUser))
 
         Assert.assertTrue(logFile.isFile)

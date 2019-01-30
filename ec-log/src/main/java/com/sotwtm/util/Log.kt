@@ -201,22 +201,6 @@ object Log {
     }
 
     /**
-     * Return string with ClassName.Method Line <tid>, and optionally tag
-     *
-     * @param msg A log message
-     * @return <tag>ClassName.Method Line <tid>
-    </tid></tag></tid> */
-    @JvmStatic
-    private fun getOutputLog(msg: String?): String {
-
-        val sb = StringBuilder()
-        getCustomPrefix(sb)
-        if (msg != null) sb.append(msg)
-
-        return sb.toString()
-    }
-
-    /**
      * @param tr The [Throwable] going to be converted
      * @return The Stacktrace string for the input [Throwable]
      */
@@ -234,7 +218,7 @@ object Log {
     fun v(msg: String?,
           tr: Throwable? = null): Int =
             if (logLevel > VERBOSE) 0
-            else printLog(LOGGER_V, defaultLogTag, getOutputLog(msg), tr)
+            else printLog(LOGGER_V, defaultLogTag, msg.toOutputLog(), tr)
 
     /**
      * For show UI related log or other repeating logs.
@@ -262,7 +246,7 @@ object Log {
     fun d(msg: String?,
           tr: Throwable? = null): Int =
             if (logLevel > DEBUG) 0
-            else printLog(LOGGER_D, defaultLogTag, getOutputLog(msg), tr)
+            else printLog(LOGGER_D, defaultLogTag, msg.toOutputLog(), tr)
 
     /**
      * For debug level message
@@ -290,7 +274,7 @@ object Log {
     fun i(msg: String?,
           tr: Throwable? = null): Int =
             if (logLevel > INFO) 0
-            else printLog(LOGGER_I, defaultLogTag, getOutputLog(msg), tr)
+            else printLog(LOGGER_I, defaultLogTag, msg.toOutputLog(), tr)
 
     /**
      * For info message
@@ -318,7 +302,7 @@ object Log {
     fun w(msg: String?,
           tr: Throwable? = null): Int =
             if (logLevel > WARN) 0
-            else printLog(LOGGER_W, defaultLogTag, getOutputLog(msg), tr)
+            else printLog(LOGGER_W, defaultLogTag, msg.toOutputLog(), tr)
 
     /**
      * For warning message.
@@ -347,7 +331,7 @@ object Log {
     fun e(msg: String?,
           tr: Throwable? = null): Int =
             if (logLevel > ERROR) 0
-            else printLog(LOGGER_E, defaultLogTag, getOutputLog(msg), tr)
+            else printLog(LOGGER_E, defaultLogTag, msg.toOutputLog(), tr)
 
     /**
      * For error message
@@ -373,7 +357,7 @@ object Log {
     @JvmStatic
     @JvmOverloads
     fun wtf(msg: String?,
-            tr: Throwable? = null): Int = wtf(defaultLogTag, getOutputLog(msg), tr)
+            tr: Throwable? = null): Int = wtf(defaultLogTag, msg.toOutputLog(), tr)
 
     /**
      * For What a Terrible Failure
@@ -396,9 +380,9 @@ object Log {
                     actionOnWtfDebug?.onWtf(msg, tr)
                             ?: {
                                 if (tr == null) {
-                                    throw RuntimeException(msg)
+                                    throw WtfException(msg)
                                 } else {
-                                    throw RuntimeException(msg, tr)
+                                    throw WtfException(msg, tr)
                                 }
                             }.invoke()
                 } else {
@@ -438,6 +422,16 @@ object Log {
         }
 
         return logger.printLog(tag, msg, tr)
+    }
+
+    @JvmStatic
+    private fun String?.toOutputLog(): String {
+
+        val sb = StringBuilder()
+        getCustomPrefix(sb)
+        if (this != null) sb.append(this)
+
+        return sb.toString()
     }
 
 

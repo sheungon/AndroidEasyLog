@@ -2,8 +2,8 @@ package com.sotwtm.util
 
 
 import android.support.test.runner.AndroidJUnit4
-import org.junit.Assert
 import junit.framework.TestCase
+import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.*
@@ -54,7 +54,7 @@ class LogTest : TestCase() {
 
             // Initial expected result
             val testLog = logMsg + ECStringUtil.randomString(random.nextInt(10))
-            val exception = Exception(ECStringUtil.randomString(random.nextInt(10)))
+            val exception = IllegalStateException(ECStringUtil.randomString(random.nextInt(10)))
             val expectedResult = BooleanArray(allLogLevels.size)
             for (j in i until allLogLevels.size) {
                 expectedResult[j] = true
@@ -87,7 +87,7 @@ class LogTest : TestCase() {
                 if (!BuildConfig.DEBUG) {
                     Assert.assertTrue(true)
                 }
-            } catch (e: Exception) {
+            } catch (e: WtfException) {
                 Assert.assertTrue(BuildConfig.DEBUG)
             }
 
@@ -96,7 +96,7 @@ class LogTest : TestCase() {
                 if (!BuildConfig.DEBUG) {
                     Assert.assertTrue(true)
                 }
-            } catch (e: Exception) {
+            } catch (e: WtfException) {
                 Assert.assertTrue(BuildConfig.DEBUG)
             }
 
@@ -105,7 +105,7 @@ class LogTest : TestCase() {
                 if (!BuildConfig.DEBUG) {
                     Assert.assertTrue(true)
                 }
-            } catch (e: Exception) {
+            } catch (e: WtfException) {
                 Assert.assertTrue(BuildConfig.DEBUG)
             }
 
@@ -114,7 +114,7 @@ class LogTest : TestCase() {
                 if (!BuildConfig.DEBUG) {
                     Assert.assertTrue(true)
                 }
-            } catch (e: Exception) {
+            } catch (e: WtfException) {
                 Assert.assertTrue(BuildConfig.DEBUG)
             }
 
@@ -139,6 +139,9 @@ class LogTest : TestCase() {
         Assert.assertEquals(Log.logLevel, originalLogLevel)
     }
 
+    /**
+     * Test getStackTraceString method.
+     * */
     @Test
     @Throws(Exception::class)
     fun testGetStackTraceString() {
