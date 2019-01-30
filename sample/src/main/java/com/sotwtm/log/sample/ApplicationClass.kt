@@ -26,7 +26,7 @@ class ApplicationClass : Application() {
         Log.logLevel = Log.VERBOSE
 
         // Initialize logcat export location
-        logFile = File(Environment.getExternalStorageDirectory().path, "log.txt")
+        logFile = File(Environment.getExternalStorageDirectory().path, "android_ec_log.txt")
         ECLogcatUtil.getInstance(this).setLogcatDest(logFile)
     }
 

@@ -70,7 +70,7 @@ class ECLogcatUtilTest : TestCase() {
         Assert.assertNull(ECLogcatUtil.getLogcatPIDRunBy(appRunByUser))
         Assert.assertFalse(ECLogcatUtil.isLogcatRunningBy(appRunByUser))
 
-        val logFile = File(application.cacheDir, "log.txt")
+        val logFile = File(application.cacheDir, "android_ec_log.txt")
         Assert.assertTrue(!logFile.isFile || logFile.delete())
         logcatUtil.setLogcatDest(logFile)
         logcatUtil.setFilterLogTag(TAG)
