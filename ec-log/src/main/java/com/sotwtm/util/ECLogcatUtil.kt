@@ -23,7 +23,7 @@ class ECLogcatUtil private constructor(private val application: Application) {
      * Only one concurrent logcat process will be created even call this method multiple times.
      *
      * @return `true` if a logcat process created successfully or a logcat process already running before.
-     * @throws NullPointerException if the logcat path is not set by [.setLogcatDest] yet.
+     * @throws NullPointerException if the logcat path is not set by [setLogcatDest] yet.
      * @see .startLogcat
      */
     @Synchronized
@@ -37,7 +37,7 @@ class ECLogcatUtil private constructor(private val application: Application) {
      *
      * @param clearPreviousLog `true` to clear the destination log file. Otherwise, new log is appended to the end of the file.
      * @return `true` if a logcat process created successfully or a logcat process already running before.
-     * @throws NullPointerException if the logcat path is not set by [.setLogcatDest] yet.
+     * @throws NullPointerException if the logcat path is not set by [setLogcatDest] yet.
      */
     @Synchronized
     fun startLogcat(clearPreviousLog: Boolean): Boolean {

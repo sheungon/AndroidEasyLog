@@ -148,7 +148,7 @@ object Log {
     private val chunkPrefix: String
         get() = "<" + android.os.Process.myTid() + ">"
 
-    /**Possible values for setting log level in [.setLogLevel] */
+    /**Possible values for setting log level in [logLevel] */
     @IntDef(VERBOSE, DEBUG, INFO, WARN, ERROR, ASSERT, NONE, UNKNOWN)
     @Retention(AnnotationRetention.SOURCE)
     annotation class LogLevel
