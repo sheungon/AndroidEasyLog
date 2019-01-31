@@ -441,7 +441,7 @@ class ECLogcatUtil private constructor(private val application: Application) {
                     Log.e(LOG_TAG, "$PS_COL_USER cannot be found from output.")
                     null
                 }
-                val nameColumn = columnIndexMap.get(PS_COL_NAME) ?: return run {
+                val nameColumn = columnIndexMap[PS_COL_NAME] ?: return run {
                     Log.e(LOG_TAG, "$PS_COL_NAME cannot be found from output.")
                     null
                 }
