@@ -35,7 +35,11 @@ class ECLogcatUtilTest : TestCase() {
     @Throws(Exception::class)
     fun testLogcat() {
 
-        val application = InstrumentationRegistry.getTargetContext().applicationContext as Application
+        val application = InstrumentationRegistry.getTargetContext().applicationContext as? Application
+        if (application == null) {
+            Assert.assertTrue(false)
+            return
+        }
         val logcatUtil = ECLogcatUtil.getInstance(application)
 
         Assert.assertNotNull(logcatUtil)

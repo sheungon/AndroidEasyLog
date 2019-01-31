@@ -46,7 +46,7 @@ object Log {
      * Level to disable all log usually in live version app
      */
     const val NONE = 100
-    /**Internal use */
+    // Internal use
     private const val UNKNOWN = -1
 
     private const val LOG_MAX_CHAR_CHUNK = 2048
@@ -162,43 +162,7 @@ object Log {
      */
     @JvmStatic
     fun isLoggable(@LogLevel level: Int): Boolean =
-            level != NONE && android.util.Log.isLoggable(defaultLogTag, level)
-
-    /**
-     * Append log for prefix with Class name, method name line number and tid in `logBuilder`
-     *
-     * @param logBuilder - A log message builder.
-     */
-    @JvmStatic
-    private fun getCustomPrefix(logBuilder: StringBuilder) {
-
-        logBuilder.append("<")
-        logBuilder.append(android.os.Process.myTid())
-        logBuilder.append(">[")
-
-        Throwable().stackTrace?.let { stackTrace ->
-
-            // Look for Log class's upper level
-            val outerClass = stackTrace.find { it.className != javaClass.name } ?: return@let
-
-            val className = outerClass.className
-            val subClass: String = className.substringAfter('$', "")
-
-            // Form a log that supports lookup to source code with this format
-            logBuilder.append("(")
-                    .append(outerClass.fileName)
-                    .append(":")
-                    .append(outerClass.lineNumber)
-                    .append(")")
-            if (subClass.isNotEmpty()) {
-                logBuilder.append(subClass)
-            }
-            logBuilder.append("#")
-                    .append(outerClass.methodName)
-        }
-
-        logBuilder.append("] ")
-    }
+        level != NONE && android.util.Log.isLoggable(defaultLogTag, level)
 
     /**
      * @param tr The [Throwable] going to be converted
@@ -215,10 +179,12 @@ object Log {
      */
     @JvmStatic
     @JvmOverloads
-    fun v(msg: String?,
-          tr: Throwable? = null): Int =
-            if (logLevel > VERBOSE) 0
-            else printLog(LOGGER_V, defaultLogTag, msg.toOutputLog(), tr)
+    fun v(
+        msg: String?,
+        tr: Throwable? = null
+    ): Int =
+        if (logLevel > VERBOSE) 0
+        else printLog(LOGGER_V, defaultLogTag, msg.toTraceableLog(), tr)
 
     /**
      * For show UI related log or other repeating logs.
@@ -229,11 +195,13 @@ object Log {
      */
     @JvmStatic
     @JvmOverloads
-    fun v(tag: String?,
-          msg: String?,
-          tr: Throwable? = null): Int =
-            if (logLevel > VERBOSE || (msg == null && tr == null)) 0
-            else printLog(LOGGER_V, tag, msg, tr)
+    fun v(
+        tag: String?,
+        msg: String?,
+        tr: Throwable? = null
+    ): Int =
+        if (logLevel > VERBOSE || (msg == null && tr == null)) 0
+        else printLog(LOGGER_V, tag, msg, tr)
 
     /**
      * For debug level message
@@ -243,10 +211,12 @@ object Log {
      */
     @JvmStatic
     @JvmOverloads
-    fun d(msg: String?,
-          tr: Throwable? = null): Int =
-            if (logLevel > DEBUG) 0
-            else printLog(LOGGER_D, defaultLogTag, msg.toOutputLog(), tr)
+    fun d(
+        msg: String?,
+        tr: Throwable? = null
+    ): Int =
+        if (logLevel > DEBUG) 0
+        else printLog(LOGGER_D, defaultLogTag, msg.toTraceableLog(), tr)
 
     /**
      * For debug level message
@@ -257,11 +227,13 @@ object Log {
      */
     @JvmStatic
     @JvmOverloads
-    fun d(tag: String?,
-          msg: String?,
-          tr: Throwable? = null): Int =
-            if (logLevel > DEBUG || (msg == null && tr == null)) 0
-            else printLog(LOGGER_D, tag, msg, tr)
+    fun d(
+        tag: String?,
+        msg: String?,
+        tr: Throwable? = null
+    ): Int =
+        if (logLevel > DEBUG || (msg == null && tr == null)) 0
+        else printLog(LOGGER_D, tag, msg, tr)
 
     /**
      * For info message
@@ -271,10 +243,12 @@ object Log {
      */
     @JvmStatic
     @JvmOverloads
-    fun i(msg: String?,
-          tr: Throwable? = null): Int =
-            if (logLevel > INFO) 0
-            else printLog(LOGGER_I, defaultLogTag, msg.toOutputLog(), tr)
+    fun i(
+        msg: String?,
+        tr: Throwable? = null
+    ): Int =
+        if (logLevel > INFO) 0
+        else printLog(LOGGER_I, defaultLogTag, msg.toTraceableLog(), tr)
 
     /**
      * For info message
@@ -285,11 +259,13 @@ object Log {
      */
     @JvmStatic
     @JvmOverloads
-    fun i(tag: String?,
-          msg: String?,
-          tr: Throwable? = null): Int =
-            if (logLevel > INFO || (msg == null && tr == null)) 0
-            else printLog(LOGGER_I, tag, msg, tr)
+    fun i(
+        tag: String?,
+        msg: String?,
+        tr: Throwable? = null
+    ): Int =
+        if (logLevel > INFO || (msg == null && tr == null)) 0
+        else printLog(LOGGER_I, tag, msg, tr)
 
     /**
      * For warning message.
@@ -299,10 +275,12 @@ object Log {
      */
     @JvmStatic
     @JvmOverloads
-    fun w(msg: String?,
-          tr: Throwable? = null): Int =
-            if (logLevel > WARN) 0
-            else printLog(LOGGER_W, defaultLogTag, msg.toOutputLog(), tr)
+    fun w(
+        msg: String?,
+        tr: Throwable? = null
+    ): Int =
+        if (logLevel > WARN) 0
+        else printLog(LOGGER_W, defaultLogTag, msg.toTraceableLog(), tr)
 
     /**
      * For warning message.
@@ -313,11 +291,13 @@ object Log {
      */
     @JvmStatic
     @JvmOverloads
-    fun w(tag: String?,
-          msg: String?,
-          tr: Throwable? = null): Int =
-            if (logLevel > WARN || (msg == null && tr == null)) 0
-            else printLog(LOGGER_W, tag, msg, tr)
+    fun w(
+        tag: String?,
+        msg: String?,
+        tr: Throwable? = null
+    ): Int =
+        if (logLevel > WARN || (msg == null && tr == null)) 0
+        else printLog(LOGGER_W, tag, msg, tr)
 
 
     /**
@@ -328,10 +308,12 @@ object Log {
      */
     @JvmStatic
     @JvmOverloads
-    fun e(msg: String?,
-          tr: Throwable? = null): Int =
-            if (logLevel > ERROR) 0
-            else printLog(LOGGER_E, defaultLogTag, msg.toOutputLog(), tr)
+    fun e(
+        msg: String?,
+        tr: Throwable? = null
+    ): Int =
+        if (logLevel > ERROR) 0
+        else printLog(LOGGER_E, defaultLogTag, msg.toTraceableLog(), tr)
 
     /**
      * For error message
@@ -342,11 +324,13 @@ object Log {
      */
     @JvmStatic
     @JvmOverloads
-    fun e(tag: String?,
-          msg: String?,
-          tr: Throwable? = null): Int =
-            if (logLevel > ERROR || (msg == null && tr == null)) 0
-            else printLog(LOGGER_E, tag, msg, tr)
+    fun e(
+        tag: String?,
+        msg: String?,
+        tr: Throwable? = null
+    ): Int =
+        if (logLevel > ERROR || (msg == null && tr == null)) 0
+        else printLog(LOGGER_E, tag, msg, tr)
 
     /**
      * For What a Terrible Failure
@@ -356,8 +340,10 @@ object Log {
      */
     @JvmStatic
     @JvmOverloads
-    fun wtf(msg: String?,
-            tr: Throwable? = null): Int = wtf(defaultLogTag, msg.toOutputLog(), tr)
+    fun wtf(
+        msg: String?,
+        tr: Throwable? = null
+    ): Int = wtf(defaultLogTag, msg.toTraceableLog(), tr)
 
     /**
      * For What a Terrible Failure
@@ -368,34 +354,38 @@ object Log {
      */
     @JvmStatic
     @JvmOverloads
-    fun wtf(tag: String?,
-            msg: String?,
-            tr: Throwable? = null): Int =
-            if (logLevel > ASSERT || (msg == null && tr == null)) 0
-            else {
-                val wrote = printLog(LOGGER_WTF, tag, msg, tr)
+    fun wtf(
+        tag: String?,
+        msg: String?,
+        tr: Throwable? = null
+    ): Int =
+        if (logLevel > ASSERT || (msg == null && tr == null)) 0
+        else {
+            val wrote = printLog(LOGGER_WTF, tag, msg, tr)
 
-                // runtime exception if you turn on assert
-                if (BuildConfig.DEBUG) {
-                    actionOnWtfDebug?.onWtf(msg, tr)
-                            ?: {
-                                if (tr == null) {
-                                    throw WtfException(msg)
-                                } else {
-                                    throw WtfException(msg, tr)
-                                }
-                            }.invoke()
-                } else {
-                    actionOnWtf?.onWtf(msg, tr)
-                }
-
-                wrote
+            // runtime exception if you turn on assert
+            if (BuildConfig.DEBUG) {
+                actionOnWtfDebug?.onWtf(msg, tr)
+                    ?: {
+                        if (tr == null) {
+                            throw WtfException(msg)
+                        } else {
+                            throw WtfException(msg, tr)
+                        }
+                    }.invoke()
+            } else {
+                actionOnWtf?.onWtf(msg, tr)
             }
 
-    private fun printLog(logger: Logger,
-                         tag: String?,
-                         msg: String?,
-                         tr: Throwable? = null): Int {
+            wrote
+        }
+
+    private fun printLog(
+        logger: Logger,
+        tag: String?,
+        msg: String?,
+        tr: Throwable? = null
+    ): Int {
 
         if (msg != null && msg.length > LOG_MAX_CHAR_CHUNK) {
             var wroteByte = 0
@@ -425,10 +415,43 @@ object Log {
     }
 
     @JvmStatic
-    private fun String?.toOutputLog(): String {
+    private fun StringBuilder.appendTraceInfoPrefix() {
+
+        append("<")
+        append(android.os.Process.myTid())
+        append(">[")
+
+        try {
+            Throwable().stackTrace?.let { stackTrace ->
+
+                // Look for Log class's upper level
+                val outerClass = stackTrace.find { it.className != javaClass.name } ?: return
+
+                val className = outerClass.className
+                val subClass: String = className.substringAfter('$', "")
+
+                // Form a log that supports lookup to source code with this format
+                append("(")
+                    .append(outerClass.fileName)
+                    .append(":")
+                    .append(outerClass.lineNumber)
+                    .append(")")
+                if (subClass.isNotEmpty()) {
+                    append(subClass)
+                }
+                append("#")
+                    .append(outerClass.methodName)
+            }
+        } finally {
+            append("] ")
+        }
+    }
+
+    @JvmStatic
+    private fun String?.toTraceableLog(): String {
 
         val sb = StringBuilder()
-        getCustomPrefix(sb)
+        sb.appendTraceInfoPrefix()
         if (this != null) sb.append(this)
 
         return sb.toString()

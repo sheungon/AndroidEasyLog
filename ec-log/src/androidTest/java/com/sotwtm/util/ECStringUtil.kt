@@ -16,19 +16,7 @@ object ECStringUtil {
     private const val LT_ENCODE = "&lt;"
     private const val GT_ENCODE = "&gt;"
 
-    /**
-     * Pseudo-random number generator object for use with randomString().
-     * The Random class is not considered to be cryptographically secure, so
-     * only use these random Strings for low to medium security applications.
-     */
     private val RAND_GEN = Random()
-
-    /**
-     * Array of numbers and letters of mixed case. Numbers appear in the list
-     * twice so that there is a more equal chance that a number will be picked.
-     * We can use the array to get a random number or letter by picking a random
-     * array index.
-     */
     private val NUMBERS_AND_LETTERS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray()
 
     /**

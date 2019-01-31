@@ -306,7 +306,7 @@ class ECLogcatUtil private constructor(private val application: Application) {
         @JvmStatic
         fun getInstance(application: Application): ECLogcatUtil =
             instance ?: ECLogcatUtil(application).apply {
-                instance = this@apply
+                instance = this
             }
 
         /**
@@ -335,8 +335,6 @@ class ECLogcatUtil private constructor(private val application: Application) {
         @JvmStatic
         fun getLogcatPIDRunBy(user: String): String? {
 
-            var pid: String? = null
-
             val ps: Process = runPSCommand() ?: return null
 
             // Read the output
@@ -347,45 +345,36 @@ class ECLogcatUtil private constructor(private val application: Application) {
 
                 // Read the first line and find the target column
                 var line: String? = bf.readLine()
-                if (line == null) {
-                    Log.e(LOG_TAG, "'ps' no output?!")
-                    return null
-                }
                 Log.d(LOG_TAG, line)
 
-                // Split by space
-                var userColumn = -1
-                var pidColumn = -1
-                var nameColumn = -1
-                var columns = line.split(REGEX_COLUMN_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }
-                for (i in columns.indices) {
-                    when {
-                        PS_COL_USER.equals(columns[i], ignoreCase = true) -> userColumn = i
-                        PS_COL_PID.equals(columns[i], ignoreCase = true) -> pidColumn = i
-                        PS_COL_NAME.equals(columns[i], ignoreCase = true) -> nameColumn = i
-                    }
-                }
-                if (userColumn == -1 ||
-                    pidColumn == -1 ||
-                    nameColumn == -1
+                // Split by space and form a column name to index map
+                val columnIndexMap = line?.toColumnIndexMap()
+                val userColumn = columnIndexMap?.get(PS_COL_USER)
+                val pidColumn = columnIndexMap?.get(PS_COL_PID)
+                val nameColumn = columnIndexMap?.get(PS_COL_NAME)
+                if (userColumn == null ||
+                    pidColumn == null ||
+                    nameColumn == null
                 ) {
                     Log.e(LOG_TAG, "Some column cannot be found from output.")
                     return null
                 }
 
-                line = bf.readLine()
-                while (line != null) {
+                while (true) {
+                    line = bf.readLine() ?: break
                     Log.d(LOG_TAG, line)
                     // Split by space
-                    columns = line.split(REGEX_COLUMN_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }
+                    val columns = line.split(REGEX_COLUMN_SEPARATOR.toRegex())
+                        .dropLastWhile { it.isEmpty() }
 
-                    if (columns[nameColumn].contains(COMMAND_LOGCAT, true) && user == columns[userColumn]) {
+                    if (columns[nameColumn].contains(COMMAND_LOGCAT, true) &&
+                        user == columns[userColumn]
+                    ) {
                         // Found the current user's process
-                        pid = columns[pidColumn]
-                        Log.v(LOG_TAG, "Logcat is running by user [$user] pid : $pid")
+                        return columns[pidColumn].apply {
+                            Log.v(LOG_TAG, "Logcat is running by user [$user] pid : $this")
+                        }
                     }
-
-                    line = bf.readLine()
                 }
                 Log.d(LOG_TAG, "======`ps` look for logcat output end======")
             } catch (e: IOException) {
@@ -403,10 +392,9 @@ class ECLogcatUtil private constructor(private val application: Application) {
                 } catch (e: Exception) {
                     Log.e(LOG_TAG, "Error on destroy ps", e)
                 }
-
             }
 
-            return pid
+            return null
         }
 
         /**
@@ -437,7 +425,7 @@ class ECLogcatUtil private constructor(private val application: Application) {
 
             val ps = runPSCommand() ?: return null
 
-            // Read the output
+            // Read the output from the command
             val inputStream = ps.inputStream
             val bf = BufferedReader(InputStreamReader(inputStream))
             try {
@@ -445,40 +433,31 @@ class ECLogcatUtil private constructor(private val application: Application) {
 
                 // Read the first line and find the target column
                 var line: String? = bf.readLine()
-                if (line == null) {
-                    Log.e(LOG_TAG, "'ps' no output?!")
-                    return null
-                }
                 Log.d(LOG_TAG, line)
 
-                // Split by space
-                var userColumn = -1
-                var nameColumn = -1
-                // Find user column and name column
-                var columns = line.split(REGEX_COLUMN_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }
-                for (i in columns.indices) {
-                    when {
-                        PS_COL_USER.equals(columns[i], ignoreCase = true) -> userColumn = i
-                        PS_COL_NAME.equals(columns[i], ignoreCase = true) -> nameColumn = i
-                    }
+                // Split by space and form a column name to index map
+                val columnIndexMap = line.toColumnIndexMap()
+                val userColumn = columnIndexMap?.get(PS_COL_USER) ?: return run {
+                    Log.e(LOG_TAG, "$PS_COL_USER cannot be found from output.")
+                    null
                 }
-                if (userColumn == -1 || nameColumn == -1) {
-                    Log.e(LOG_TAG, "Some column cannot be found from output.")
-                    return null
+                val nameColumn = columnIndexMap.get(PS_COL_NAME) ?: return run {
+                    Log.e(LOG_TAG, "$PS_COL_NAME cannot be found from output.")
+                    null
                 }
 
-                line = bf.readLine()
-                while (line != null) {
+                while (true) {
+                    line = bf.readLine() ?: break
                     Log.d(LOG_TAG, line)
                     // Split by space
-                    columns = line.split(REGEX_COLUMN_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }
+                    val columns = line.split(REGEX_COLUMN_SEPARATOR.toRegex())
+                        .dropLastWhile { it.isEmpty() }
 
-                    if (packageName == columns[nameColumn]) {
-                        return columns[userColumn].apply {
-                            Log.d(LOG_TAG, "Application executed by user : $this")
+                    if (packageName == columns.getOrNull(nameColumn)) {
+                        return columns.getOrNull(userColumn)?.apply {
+                            Log.i(LOG_TAG, "Application executed by user : $this")
                         }
                     }
-                    line = bf.readLine()
                 }
 
             } catch (e: IOException) {
@@ -499,6 +478,13 @@ class ECLogcatUtil private constructor(private val application: Application) {
                 }
             }
             return null
+        }
+
+        private fun String?.toColumnIndexMap(): Map<String, Int>? {
+            var i = 0
+            return this?.split(REGEX_COLUMN_SEPARATOR.toRegex())
+                ?.dropLastWhile { it.isEmpty() }
+                ?.associateWith { i++ }
         }
 
         @JvmStatic
