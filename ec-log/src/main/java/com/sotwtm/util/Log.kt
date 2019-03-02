@@ -201,7 +201,7 @@ object Log {
         tr: Throwable? = null
     ): Int =
         if (logLevel > VERBOSE || (msg == null && tr == null)) 0
-        else printLog(LOGGER_V, tag, msg, tr)
+        else printLog(LOGGER_V, tag, msg.toTraceableLog(), tr)
 
     /**
      * For debug level message
@@ -233,7 +233,7 @@ object Log {
         tr: Throwable? = null
     ): Int =
         if (logLevel > DEBUG || (msg == null && tr == null)) 0
-        else printLog(LOGGER_D, tag, msg, tr)
+        else printLog(LOGGER_D, tag, msg.toTraceableLog(), tr)
 
     /**
      * For info message
@@ -265,7 +265,7 @@ object Log {
         tr: Throwable? = null
     ): Int =
         if (logLevel > INFO || (msg == null && tr == null)) 0
-        else printLog(LOGGER_I, tag, msg, tr)
+        else printLog(LOGGER_I, tag, msg.toTraceableLog(), tr)
 
     /**
      * For warning message.
@@ -297,7 +297,7 @@ object Log {
         tr: Throwable? = null
     ): Int =
         if (logLevel > WARN || (msg == null && tr == null)) 0
-        else printLog(LOGGER_W, tag, msg, tr)
+        else printLog(LOGGER_W, tag, msg.toTraceableLog(), tr)
 
 
     /**
@@ -330,7 +330,7 @@ object Log {
         tr: Throwable? = null
     ): Int =
         if (logLevel > ERROR || (msg == null && tr == null)) 0
-        else printLog(LOGGER_E, tag, msg, tr)
+        else printLog(LOGGER_E, tag, msg.toTraceableLog(), tr)
 
     /**
      * For What a Terrible Failure
@@ -361,7 +361,7 @@ object Log {
     ): Int =
         if (logLevel > ASSERT || (msg == null && tr == null)) 0
         else {
-            val wrote = printLog(LOGGER_WTF, tag, msg, tr)
+            val wrote = printLog(LOGGER_WTF, tag, msg.toTraceableLog(), tr)
 
             // runtime exception if you turn on assert
             if (BuildConfig.DEBUG) {
@@ -411,7 +411,7 @@ object Log {
             return wroteByte
         }
 
-        return logger.printLog(tag, msg, tr)
+        return logger.printLog(tag, msg.toTraceableLog(), tr)
     }
 
     @JvmStatic
