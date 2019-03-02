@@ -343,7 +343,7 @@ object Log {
     fun wtf(
         msg: String?,
         tr: Throwable? = null
-    ): Int = wtf(defaultLogTag, msg.toTraceableLog(), tr)
+    ): Int = wtf(defaultLogTag, msg, tr)
 
     /**
      * For What a Terrible Failure
@@ -411,7 +411,7 @@ object Log {
             return wroteByte
         }
 
-        return logger.printLog(tag, msg.toTraceableLog(), tr)
+        return logger.printLog(tag, msg, tr)
     }
 
     @JvmStatic
@@ -425,7 +425,7 @@ object Log {
             Throwable().stackTrace?.let { stackTrace ->
 
                 // Look for Log class's upper level
-                val outerClass = stackTrace.find { it.className != javaClass.name } ?: return
+                val outerClass = stackTrace.find { it.className != Log.javaClass.name } ?: return
 
                 val className = outerClass.className
                 val subClass: String = className.substringAfter('$', "")
