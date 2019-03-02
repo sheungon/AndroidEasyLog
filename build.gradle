@@ -6,7 +6,7 @@ buildscript {
         target_sdk_version = 28
 
         versions = [
-                'kotlin_plugin'      : '1.3.20',
+                'kotlin_plugin'      : '1.3.21',
                 'kotlin_env'         : 'jdk8',
 
                 // Support library version
