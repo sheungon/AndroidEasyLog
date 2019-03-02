@@ -4,10 +4,6 @@ apply plugin: 'kotlin-android'
 // For Code coverage
 apply plugin: 'jacoco'
 
-// Read setup
-Properties properties = new Properties()
-properties.load(project.rootProject.file('bintray.properties').newDataInputStream())
-
 android {
     compileSdkVersion compile_sdk_version
 
@@ -15,7 +11,7 @@ android {
         minSdkVersion 14
         targetSdkVersion target_sdk_version
         versionCode 31
-        versionName properties.getProperty("lib.version")
+        versionName "0.3.1"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -47,6 +43,13 @@ dependencies {
     testImplementation deps.junit
 }
 
+
 // Place it at the end of the file
-apply from: '../install.gradle'
-apply from: '../bintray.gradle'
+def bintrayProp = project.rootProject.file('bintray.properties')
+if (bintrayProp.isFile()) {
+    // Enable Bintray setup
+    apply from: '../install.gradle'
+    apply from: '../bintray.gradle'
+} else {
+    println 'No bintray.properties'
+}
