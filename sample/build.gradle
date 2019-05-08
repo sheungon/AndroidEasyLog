@@ -50,7 +50,7 @@ android {
 
 dependencies {
 
-    implementation project(':ec-log')
+    implementation "com.sotwtm.util:ec-log:1.0.0"
 
     /*
      * Kotlin
