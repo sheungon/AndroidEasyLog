@@ -9,4 +9,5 @@
     <string name="error_read_log">!ERROR ON READ LOG!</string>
     <string name="log">Log</string>
     <string name="msg_needed_external_access">External storage access is needed for this demo.</string>
+    <string name="error_log_not_created">!LOG FILE NOT CREATED YET!</string>
 </resources>

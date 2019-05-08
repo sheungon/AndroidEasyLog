@@ -13,6 +13,10 @@ import androidx.databinding.DataBindingUtil
 import com.sotwtm.log.sample.databinding.ActivityMainBinding
 import com.sotwtm.util.ECLogcatUtil
 import com.sotwtm.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -90,25 +94,42 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onClickStart() {
-        ECLogcatUtil.getInstance(application).startLogcat()
+        if (ECLogcatUtil.getInstance(application).startLogcat()) {
+            Log.v("*** Log Started ***")
+        }
         mLogObserver?.stopWatching()
-        mLogObserver?.startWatching()
+        CoroutineScope(Dispatchers.Default).launch {
+            delay(500)
+            mLogObserver?.startWatching()
+        }
     }
 
     fun onClickStop() {
-        ECLogcatUtil.getInstance(application).stopLogcat()
+        if (ECLogcatUtil.getInstance(application).stopLogcat()) {
+            Log.v("*** Log Stopped ***")
+        }
     }
 
     fun onClickClear() {
-        ECLogcatUtil.getInstance(application).clearLogcat()
+        if (ECLogcatUtil.getInstance(application).clearLogcat()) {
+            Log.v("*** Log Cleared ***")
+        }
         mLogObserver?.stopWatching()
-        mLogObserver?.startWatching()
+        CoroutineScope(Dispatchers.Default).launch {
+            delay(500)
+            mLogObserver?.startWatching()
+        }
     }
 
     fun onClickReset() {
-        ECLogcatUtil.getInstance(application).resetLogcat()
+        if (ECLogcatUtil.getInstance(application).resetLogcat()) {
+            Log.v("*** Log Reset ***")
+        }
         mLogObserver?.stopWatching()
-        mLogObserver?.startWatching()
+        CoroutineScope(Dispatchers.Default).launch {
+            delay(500)
+            mLogObserver?.startWatching()
+        }
     }
 
     fun onClickFilter() {
@@ -120,7 +141,10 @@ class MainActivity : AppCompatActivity() {
         logcatUtil.stopLogcat()
         logcatUtil.startLogcat()
         mLogObserver?.stopWatching()
-        mLogObserver?.startWatching()
+        CoroutineScope(Dispatchers.Default).launch {
+            delay(500)
+            mLogObserver?.startWatching()
+        }
     }
 
     fun onClickLog() {
@@ -134,15 +158,14 @@ class MainActivity : AppCompatActivity() {
 
         val logFile = ApplicationClass.instance.logFile
 
-        if (!logFile.isFile ||
-            !logFile.canRead()
-        ) {
-            if (!logFile.isFile) {
-                // Log file not yet created
-                binding.setLog("")
-            } else {
-                binding.setLog(getString(R.string.error_read_log))
-            }
+        if (!logFile.isFile) {
+            // Log file not yet created
+            binding.setLog(getString(R.string.error_log_not_created))
+            return
+        }
+
+        if (!logFile.canRead()) {
+            binding.setLog(getString(R.string.error_read_log))
             return
         }
 
@@ -174,7 +197,7 @@ class MainActivity : AppCompatActivity() {
             val activity = mActivityRef.get() ?: return
 
             when (event) {
-                FileObserver.MODIFY, FileObserver.CLOSE_WRITE, FileObserver.DELETE, FileObserver.DELETE_SELF -> activity.runOnUiThread(
+                MODIFY, CLOSE_WRITE, DELETE, DELETE_SELF -> activity.runOnUiThread(
                     mUpdateLogTask
                 )
             }

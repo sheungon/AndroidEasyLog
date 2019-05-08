@@ -57,6 +57,7 @@ dependencies {
      * Kotlin
      * */
     implementation "org.jetbrains.kotlin:kotlin-stdlib-$versions.kotlin_env:$versions.kotlin_plugin"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlin_coroutines"
 
     implementation "androidx.appcompat:appcompat:1.0.2"
 
