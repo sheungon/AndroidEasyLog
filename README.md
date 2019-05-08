@@ -1,6 +1,5 @@
 # AndroidEasyLog [ ![Download](https://api.bintray.com/packages/sheungon/maven/android-ec-log/images/download.svg) ](https://bintray.com/sheungon/maven/android-ec-log/_latestVersion) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5a7759333fe14d5ba7ce914c3bd08eae)](https://www.codacy.com/app/sheungon/AndroidEasyLog) [![](https://raw.githubusercontent.com/novoda/novoda/master/assets/btn_apache_lisence.png)](LICENSE)
 
-**This library migrated to AndroidX from version 1.0.0**<br /><br />
 Easily enable/disable logs in your app without changing much in your current codes.<br />
 It also shows code line number in the log.<br />
 Very convenient for tracing problems.<br />
@@ -12,10 +11,6 @@ Very convenient for tracing problems.<br />
 #### Gradle
 ```gradle
 implementation 'com.sotwtm.util:ec-log:1.0.0'
-```
-For project not yet migrated to AndroidX, please use version 0.3.1
-```gradle
-implementation 'com.sotwtm.util:ec-log:0.3.1'
 ```
 
 ## Usage
