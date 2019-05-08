@@ -22,9 +22,9 @@ class ECLogcatUtil private constructor(private val application: Application) {
      * Start a logcat process and log the log to `logFile`.
      * Only one concurrent logcat process will be created even call this method multiple times.
      *
-     * @return `true` if a logcat process created successfully or a logcat process already running before.
+     * @return true if a logcat process created successfully or a logcat process already running before.
      * @throws NullPointerException if the logcat path is not set by [setLogcatDest] yet.
-     * @see .startLogcat
+     * @see stopLogcat
      */
     @Synchronized
     fun startLogcat(): Boolean {
@@ -35,9 +35,10 @@ class ECLogcatUtil private constructor(private val application: Application) {
      * Start a logcat process and log the log to `logFile`.
      * Only one concurrent logcat process will be created even call this method multiple times.
      *
-     * @param clearPreviousLog `true` to clear the destination log file. Otherwise, new log is appended to the end of the file.
-     * @return `true` if a logcat process created successfully or a logcat process already running before.
+     * @param clearPreviousLog true to clear the destination log file. Otherwise, new log is appended to the end of the file.
+     * @return true if a logcat process created successfully or a logcat process already running before.
      * @throws NullPointerException if the logcat path is not set by [setLogcatDest] yet.
+     * @see stopLogcat
      */
     @Synchronized
     fun startLogcat(clearPreviousLog: Boolean): Boolean {
@@ -83,7 +84,7 @@ class ECLogcatUtil private constructor(private val application: Application) {
     /**
      * Stop any running logcat instance
      *
-     * @return `true` if a logcat can be stopped by this. Or no logcat process was running.
+     * @return true if a logcat can be stopped by this. Or no logcat process was running.
      */
     fun stopLogcat(): Boolean {
 
@@ -113,8 +114,8 @@ class ECLogcatUtil private constructor(private val application: Application) {
     /**
      * Reset logcat to log down all logs again.
      *
-     * @return `true` if a logcat process has been recreated.
-     * @see .clearLogcat
+     * @return true if a logcat process has been recreated.
+     * @see clearLogcat
      */
     fun resetLogcat(): Boolean {
 
@@ -128,10 +129,10 @@ class ECLogcatUtil private constructor(private val application: Application) {
     }
 
     /**
-     * Reset and start to print log since now only
+     * Clear and start to print log since now only
      *
-     * @return `true` if a logcat process has been recreated.
-     * @see .resetLogcat
+     * @return true if a logcat process has been recreated.
+     * @see resetLogcat
      */
     fun clearLogcat(): Boolean {
 
@@ -150,7 +151,7 @@ class ECLogcatUtil private constructor(private val application: Application) {
      * Set the maximum size of each logcat file.
      *
      * @param logcatFileMaxSize Size in KB
-     * @see .setMaxLogFile
+     * @see setMaxLogFile
      */
     fun setLogcatFileMaxSize(logcatFileMaxSize: Int) {
         getEditor(application).putInt(PREF_KEY_LOGCAT_FILE_MAX_SIZE, logcatFileMaxSize).apply()
@@ -169,7 +170,7 @@ class ECLogcatUtil private constructor(private val application: Application) {
      * Set the num of log file will be created if a log file excesses the max size
      *
      * @param maxLogFile The maximum number of log file will be created before overwriting the first log file.
-     * @see .setLogcatFileMaxSize
+     * @see setLogcatFileMaxSize
      */
     fun setMaxLogFile(maxLogFile: Int) {
         getEditor(application).putInt(PREF_KEY_LOGCAT_MAX_LOG_FILE, maxLogFile).apply()

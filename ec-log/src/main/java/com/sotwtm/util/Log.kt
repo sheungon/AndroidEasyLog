@@ -156,7 +156,7 @@ object Log {
 
     /**
      * @param level The log level going to check.
-     * @return `true` if the input level is loggable.
+     * @return true if the input level is loggable.
      * @see LogLevel
      *
      */
