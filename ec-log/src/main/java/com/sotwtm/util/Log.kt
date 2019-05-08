@@ -1,6 +1,6 @@
 package com.sotwtm.util
 
-import android.support.annotation.IntDef
+import androidx.annotation.IntDef
 
 
 /**

@@ -12,8 +12,8 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
@@ -58,12 +58,9 @@ dependencies {
      * */
     implementation "org.jetbrains.kotlin:kotlin-stdlib-$versions.kotlin_env:$versions.kotlin_plugin"
 
-    implementation "com.android.support:appcompat-v7:$versions.support_lib"
+    implementation "androidx.appcompat:appcompat:1.0.2"
 
 
-    androidTestImplementation("com.android.support.test.espresso:espresso-core:$versions.espresso", {
-        exclude group: 'com.android.support', module: 'support-annotations'
-        exclude group: 'com.google.code.findbugs', module: 'jsr305'
-    })
+    androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espresso"
     testImplementation deps.junit
 }

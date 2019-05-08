@@ -1,7 +1,7 @@
 package com.sotwtm.util
 
 
-import android.support.test.runner.AndroidJUnit4
+import androidx.test.runner.AndroidJUnit4
 import junit.framework.TestCase
 import org.junit.Assert
 import org.junit.Test

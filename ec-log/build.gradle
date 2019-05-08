@@ -13,7 +13,7 @@ android {
         versionCode 31
         versionName "0.3.1"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
@@ -34,12 +34,9 @@ dependencies {
      * Kotlin
      * */
     implementation "org.jetbrains.kotlin:kotlin-stdlib-$versions.kotlin_env:$versions.kotlin_plugin"
-    implementation "com.android.support:support-annotations:$versions.support_lib"
+    implementation "androidx.annotation:annotation:1.0.2"
 
-    androidTestImplementation("com.android.support.test.espresso:espresso-core:$versions.espresso", {
-        exclude group: 'com.android.support', module: 'support-annotations'
-        exclude group: 'com.google.code.findbugs', module: 'jsr305'
-    })
+    androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espresso"
     testImplementation deps.junit
 }
 
