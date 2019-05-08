@@ -32,7 +32,7 @@ buildscript {
 
                 // Kotlin doc
                 // https://github.com/Kotlin/dokka
-                'dokka'              : '0.9.18',
+                'dokka'              : '0.9.17',
         ]
 
         deps = [
