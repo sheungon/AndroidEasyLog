@@ -14,32 +14,26 @@ object Log {
     /**
      * Level to enable all logs
      * @see android.util.Log.VERBOSE
-     *
      */
     const val VERBOSE = android.util.Log.VERBOSE
     /**
      * @see android.util.Log.DEBUG
-     *
      */
     const val DEBUG = android.util.Log.DEBUG
     /**
      * @see android.util.Log.INFO
-     *
      */
     const val INFO = android.util.Log.INFO
     /**
      * @see android.util.Log.WARN
-     *
      */
     const val WARN = android.util.Log.WARN
     /**
      * @see android.util.Log.ERROR
-     *
      */
     const val ERROR = android.util.Log.ERROR
     /**
      * @see android.util.Log.ASSERT
-     *
      */
     const val ASSERT = android.util.Log.ASSERT
     /**
