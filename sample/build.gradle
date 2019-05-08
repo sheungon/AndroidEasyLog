@@ -9,9 +9,8 @@ android {
         applicationId "com.sotwtm.log.sample"
         minSdkVersion 14
         targetSdkVersion target_sdk_version
-        versionCode 1
-        versionName "1.0"
-
+        versionCode 100
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
