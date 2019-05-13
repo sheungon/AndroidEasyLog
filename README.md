@@ -1,13 +1,17 @@
 # AndroidEasyLog [ ![Download](https://api.bintray.com/packages/sheungon/maven/android-ec-log/images/download.svg) ](https://bintray.com/sheungon/maven/android-ec-log/_latestVersion) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5a7759333fe14d5ba7ce914c3bd08eae)](https://www.codacy.com/app/sheungon/AndroidEasyLog) [![](https://raw.githubusercontent.com/novoda/novoda/master/assets/btn_apache_lisence.png)](LICENSE)
 
+A very lite weight Log library for Android.<br />
+Very easy to migrate from android Log to AndroidEasyLog.<br />
+<br />
 Easily enable/disable logs in your app without changing much in your current codes.<br />
 It also shows code line number in the log.<br />
 Very convenient for tracing problems.<br />
+#### Example
 ```
 01-27 12:18:35.086 15686-15686/com.sotwtm.log.sample D/Log: <15686>[(MainActivity.kt:96)#onClickLog] Clicked at : Fri Jan 27 12:18:35 GMT+08:00 2017
 ```
 
-## Adding to project
+## Integration
 #### Gradle
 ```gradle
 implementation 'com.sotwtm.util:ec-log:1.0.0'
