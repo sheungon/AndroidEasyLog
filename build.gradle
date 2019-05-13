@@ -18,6 +18,8 @@ buildscript {
                 // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-android
                 'kotlin_coroutines': '1.2.1',
 
+
+                //////// For bintray publishing ////////
                 /*
                  * Gradle Android Maven plugin
                  * Use 2.0 for gradle version 4.1+
@@ -30,16 +32,18 @@ buildscript {
                  * https://github.com/bintray/gradle-bintray-plugin
                  * */
                 'bintray_plugin'     : '1.8.4',
-
-                // https://developer.android.com/topic/libraries/testing-support-library/packages.html
-                'espresso'           : '3.1.0',
-
                 // Kotlin doc
                 // https://github.com/Kotlin/dokka
                 'dokka'              : '0.9.17',
+
+
+                //////// For unit testing ////////
+                // https://developer.android.com/topic/libraries/testing-support-library/packages.html
+                'espresso'           : '3.1.0',
         ]
 
         deps = [
+                //////// For unit testing ////////
                 // http://junit.org/junit4/
                 'junit': 'junit:junit:4.12'
         ]
