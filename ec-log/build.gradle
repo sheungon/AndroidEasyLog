@@ -34,7 +34,7 @@ dependencies {
      * Kotlin
      * */
     implementation "org.jetbrains.kotlin:kotlin-stdlib-$versions.kotlin_env:$versions.kotlin_plugin"
-    implementation "androidx.annotation:annotation:1.0.2"
+    implementation "androidx.annotation:annotation:1.1.0"
 
     androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espresso"
     testImplementation deps.junit
